@@ -1,0 +1,257 @@
+//Team Code Blooded
+//Raul Ramirez, Chris Carson, Michael Rose and John Coffelt
+import java.util.*;
+
+//Begin class Assig3
+public class Assig3 
+{
+   //This is a helper method that returns a random card to fill the testing hand
+   static private Card randomCard(Card card1, Card card2, Card card3, Card card4, Card card5)
+   {
+      Random rand = new Random();
+      int randNumber = rand.nextInt(5) + 1;
+
+      switch (randNumber) //Our switch statement to convert the random integer into a string
+      {
+         case 1:  return card1;
+         case 2:  return card2;
+         case 3:  return card3;
+         case 4:  return card4;
+         case 5:  return card5;
+         default: return card1;//this is never used, but the program would not compile without it
+      }
+   }
+   //Our main method
+	public static void main(String[] args) 
+	{
+	   //Testing of the Card class
+	   Card card1 = new Card();
+	   Card card2 = new Card('4', Card.Suit.diamonds);
+	   Card card3 = new Card('Z', Card.Suit.clubs);
+	   System.out.println(card1.toString());
+	   System.out.println(card2.toString());
+	   System.out.println(card3.toString());
+	   
+	   card1.set('$', Card.Suit.clubs);
+	   card3.set('2', Card.Suit.clubs);
+	   
+	   System.out.println();
+	   System.out.println(card1.toString());
+	   System.out.println(card2.toString());
+	   System.out.println(card3.toString());
+	   System.out.println();
+	   
+	   //Testing of the Hand class
+	   card1.set('T', Card.Suit.clubs);
+	   Card card4 = new Card('Q', Card.Suit.spades);
+	   Card card5 = new Card('8', Card.Suit.hearts);
+	   
+	   Hand hand1 = new Hand();
+
+	   while (hand1.takeCard(randomCard(card1, card2, card3, card4, card5))){}
+	   
+	   System.out.println("Hand is now full!");
+	   System.out.println(hand1.toString());
+	   
+	   System.out.println();
+	   System.out.println("Testing inspectCard()");
+	   System.out.println(hand1.inspectCard(42));
+	   System.out.println(hand1.inspectCard(52));
+	   System.out.println();
+	   
+	   while (hand1.getNumCards() != 0)
+	   {
+	      System.out.println("Playing " + hand1.playCard().toString());
+	   }
+	   System.out.println(hand1.toString());
+
+	}
+	//Phase one card class Raul
+	static class Card
+	{
+	   //holds the suit data
+	   public enum Suit {clubs, diamonds, hearts, spades};
+		//private variables
+		private char value;
+		private Suit suit;
+		private boolean errorFlag;
+		
+		//Constructor that sets suit and value for card
+		public Card(char value, Suit suit)
+		{
+			set(value,suit);
+		}
+		//default card no values set if data is bad
+		//set data if errorFlag is true using mutator
+		//no values set if data is bad
+		public Card() 
+		{
+			this('A', Suit.spades);
+		}
+		//mutator that accepts valid values
+		public boolean set(char value, Suit suit)
+		{
+			errorFlag = true;
+			char upperValue = Character.toUpperCase(value);
+			if (isValid(upperValue, suit)) 
+			{
+				errorFlag = false;//false if card is valid
+				this.value = upperValue;
+				this.suit = suit;
+			}
+			return !errorFlag;
+		}
+		//return the suit
+		public Suit getSuit() 
+		{
+			return suit;
+		}
+		//return card value
+		public char getValue() 
+		{
+			return value;
+		}
+		//error flag
+		public boolean getErrorFlag() 
+		{
+			return errorFlag;
+		}
+		//Checks if two cards are equal
+		public boolean equals(Card card1) 
+		{
+			return (card1.getSuit() == suit && card1.getValue() == value);
+		}
+		//checks if the card is valid
+		private boolean isValid(char value, Suit suit)
+		{
+		    char[] VALID_VALUES = {'2','3','4','5','6','7','8',
+		                           '9','T','J','Q','K','A'};
+		    for(char c : VALID_VALUES) 
+		    {
+				if(value == c) 
+				{
+					return true;
+				}
+		    }
+			 return false;
+		}
+		//provides clean representation of the card
+		public String toString() 
+		{
+			//returns the string
+			String A_str;
+			//checks for errorFlag if true and prints 
+			//invalid card type
+			if(errorFlag == true) 
+			{
+				A_str = "** invalid **";
+			}
+			else 
+			{
+				A_str = value + " of " + suit;
+			}
+			return A_str;
+		}
+	}
+	
+	//Phase two, Chris Carson
+	static class Hand
+	{
+	   //Our public and private variables
+	   public final int MAX_CARDS = 50;
+	   private Card[] myCards = new Card[MAX_CARDS];
+	   private int numCards;
+	   
+	   //The Constructor
+	   public Hand()
+	   {
+	      numCards = 0;
+	   }
+	   //Method to rest all card values to null and numCards to 0
+	   public void resetHand()
+	   {
+	      numCards = 0;
+	      for (int i = 0; i < myCards.length; i++)
+	      {
+	         myCards[i] = null;
+	      }
+	   }
+	   //Method to take a card and put it in the hand. Returns false if hand is full
+	   public boolean takeCard(Card card)
+	   {
+	      if (numCards < MAX_CARDS)
+	      {
+	         myCards[numCards] = card;
+	         numCards++;
+	         return true;
+	      }
+	      else
+	      {
+	         return false;
+	      }
+	   }
+	   //A method to play a card, removing it from the hand
+	   public Card playCard()
+	   {
+	      numCards--;
+	      Card returnCard = myCards[numCards];
+	      myCards[numCards] = null;
+	      
+	      return returnCard;
+	   }
+	   //A method to return a string of all the cards in the hand
+	   public String toString()
+	   {
+	      String returnString = "Hand = (";
+	      
+	      if (numCards > 0)
+	      {
+	         returnString = returnString + myCards[0].toString();
+	         // this counter is used to create a line break so the output is easier to read
+	         int count = 0;
+	         for (int i = 1; i < numCards; i++)
+	         {
+	            count++;
+	            if (count > 5)
+	            {
+	               returnString = returnString + ",\n" + myCards[i].toString();
+	               count = 0;
+	            }
+	            else
+	            {
+	               returnString = returnString + ", " + myCards[i].toString();
+	            }
+	         }
+	      }
+	      
+	      returnString = returnString + ")";
+	      return returnString;
+	   }
+	   //Accessor for numCards
+      public int getNumCards() 
+      {
+         return numCards;
+      }
+      //Method to return the card from a position in the hand
+      public Card inspectCard(int k)
+      {
+         //This is our errorflag card we return if the position is invalid
+         Card errorCard = new Card('Z', Card.Suit.diamonds);
+         
+         if (k <= numCards)
+         {
+            return myCards[k];
+         }
+         else
+         {
+            return errorCard;
+         }
+      }
+	}
+	
+	class Deck
+	{
+		
+	}
+
+}
