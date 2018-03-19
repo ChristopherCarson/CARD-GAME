@@ -64,6 +64,43 @@ public class Assig3
 	      System.out.println("Playing " + hand1.playCard().toString());
 	   }
 	   System.out.println(hand1.toString());
+	   
+	   //Testing Deck Class
+      Deck testDeck = new Deck(2);
+      
+      while(testDeck.getTopCard() != -1)
+      {
+         Card testCard = testDeck.dealCard();
+         System.out.print(testCard + " / ");
+      }
+      System.out.println();
+      testDeck.init(2);
+      testDeck.shuffle();
+      
+      while(testDeck.getTopCard() != -1)
+      {
+         Card testCard = testDeck.dealCard();
+         System.out.print(testCard + " / ");
+      }
+      
+      testDeck.init(1);
+      System.out.println();
+      while(testDeck.getTopCard() != -1)
+      {
+         Card testCard = testDeck.dealCard();
+         System.out.print(testCard + " / ");
+      }
+      
+      testDeck.init(1);
+      testDeck.shuffle();
+      System.out.println();
+      while(testDeck.getTopCard() != -1)
+      {
+         Card testCard = testDeck.dealCard();
+         System.out.print(testCard + " / ");
+      }
+      
+      //Phase 4
 
 	}
 	//Phase one card class Raul
@@ -249,9 +286,128 @@ public class Assig3
       }
 	}
 	
-	class Deck
-	{
-		
-	}
+	//Phase 3, Michael Rose
+	//Had to make the class static to avoid a conflict with masterPack.
+   static class Deck
+   {
+      //member variables
+      public static final int MAX_CARDS = 312;
+      
+      private static Card[] masterPack = new Card[52];
+      private Card[] cards = new Card[MAX_CARDS];
+      private int topCard, numPacks;
+      
+      //private boolean to check to see if master pack has been created already.
+      private static boolean isMasterPack = false;
+      
+      //Constructors 
+      public Deck(int numPacks)
+      {
+         allocateMasterPack();
+         this.numPacks = numPacks;
+         topCard = (52 * numPacks) - 1;
+         for(int i = 0; i <= topCard; i++)
+         {
+            cards[i] = masterPack[i%52];
+         }
+      }//end overloaded constructor
+      
+      public Deck()
+      {
+         allocateMasterPack();
+         numPacks = 1;
+         topCard = (52 * numPacks) - 1;
+         for(int i = 0; i <= topCard; i++)
+         {
+            cards[i] = masterPack[i];
+         }
+         
+      }//end basic constructor
+      
+      //re-populate cards[] with the standard 52 ~ numPacks cards.
+      public void init(int numPacks)
+      {
+         this.numPacks = numPacks;
+         topCard = (52 * this.numPacks) - 1;
+         for(int i = 0; i <= topCard; i++)
+         {
+            cards[i] = masterPack[i%52];
+         }
+      }//end init
+      
+      //This function shuffles the deck.
+      public void shuffle()
+      {
+         //create random number generator and temporary variables
+         Random random = new Random();
+         Card temp;
+         int index;
+         
+         //go through and swap parts of the array with random parts of the array.  TopCard is used to avoid nulls in the much bigger cards array.
+         for(int i = 0; i < this.topCard + 1; i++)
+         {
+            index = random.nextInt(this.topCard + 1);
+            temp = cards[index];
+            cards[index] = cards[i];
+            cards[i] = temp;
+         }
+         
+      }//end shuffle
+      
+      //take a card off the top of the deck and return it after deleting it from the cards array
+      public Card dealCard()
+      {
+         Card dealtCard = cards[topCard];
+         cards[topCard] = null;
+         topCard--;
+         return dealtCard;
+      }//end dealCard
+      
+      //return the value of topCard
+      public int getTopCard()
+      {
+         return this.topCard;
+      }//end getTopCard
+      
+      //inspect a card at position k in the cards array.  if k is out of bounds or pointing to a null value in the cards array,
+      //return a bad card.
+      public Card inspectCard(int k)
+      {
+         Card errorCard = new Card('Z', Card.Suit.diamonds);
+         
+         if (k <= topCard)
+         {
+            return cards[k];
+         }
+         else
+         {
+            return errorCard;
+         }
+      }//end inspectCard
+      
+      //This function creates the master pack.  After this function has run, it sets the boolean variable to true
+      //so the function will not run again.
+      private static void allocateMasterPack()
+      {
+         if(isMasterPack == false)
+         {
+            char[] VALID_VALUES = {'A', '2','3','4','5','6','7','8',
+                  '9','T','J','Q','K'};
+            int i = 0;
+            
+            for(Card.Suit s : Card.Suit.values())
+            {
+               for(int j = 0; j < 13; j++)
+               {
+                  masterPack[i] = new Card(VALID_VALUES[j], s);
+                  i++;
+               }
+            }
+            //set isMasterPack to true to never run this function again.
+            isMasterPack = true;
+         }
+      }//end allocateMasterPack
+      
+   }//End Deck Class
 
 }
