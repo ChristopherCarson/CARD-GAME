@@ -101,8 +101,63 @@ public class Assig3
       }
       
       //Phase 4
+      
+      //create an array of hands for the players.
+      Hand[] hands = new Hand[10];
+      
+      //ask the user for the number of players(hands) continue to ask until a number between 1 and 10 is entered
+      Scanner scan = new Scanner(System.in);
+      System.out.print("How many Hands? (1 to 10 please): ");
+      int numPlayers = scan.nextInt();
+      while(numPlayers <= 0 || numPlayers >= 11)
+      {
+         System.out.print("How many hands? (1 to 10 please): ");
+         numPlayers = scan.nextInt();
+      }
+      
+      //create the players based on the user input
+      for(int i = 0; i < numPlayers; i++)
+      {
+         hands[i] = new Hand();
+      }
+      
+      //create the deck and deal cards to each of the players
+      Deck playDeck = new Deck();
+      int count = 0;
+      while(playDeck.getTopCard() != -1)
+      {
+         hands[count%numPlayers].takeCard(playDeck.dealCard());
+         count++;
+      }
+      //display the hands and then re-initialize and shuffle the deck, then display the shuffled cards
+      System.out.println("Here are our hands from the unshuffled deck: ");
+      for(int i = 0; i < numPlayers; i++)
+      {
+         System.out.println(hands[i] + "\n");
+      }
+      
+      playDeck.init(1);
+      playDeck.shuffle();
+      
+      for(int i = 0; i <numPlayers; i++)
+      {
+         hands[i].resetHand();
+      }
+      count = 0;
+      while(playDeck.getTopCard() != -1)
+      {
+         hands[count%numPlayers].takeCard(playDeck.dealCard());
+         count++;
+      }
+      System.out.println("Here are our hands from the SHUFFLED deck: ");
+      for(int i = 0; i < numPlayers; i++)
+      {
+         System.out.println(hands[i] + "\n");
+      }
+      
+      scan.close();
 
-	}
+	}//end main
 	//Phase one card class Raul
 	static class Card
 	{
