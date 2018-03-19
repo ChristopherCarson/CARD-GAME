@@ -466,3 +466,128 @@ public class Assig3
    }//End Deck Class
 
 }
+
+/*************************************SAMPLE OUTPUT*********************************************
+A of spades
+4 of diamonds
+** invalid **
+
+** invalid **
+4 of diamonds
+2 of clubs
+
+Hand is now full!
+Hand = (8 of hearts, 8 of hearts, T of clubs, Q of spades, T of clubs, 4 of diamonds,
+2 of clubs, 8 of hearts, 8 of hearts, T of clubs, 8 of hearts, Q of spades,
+T of clubs, T of clubs, 4 of diamonds, T of clubs, 2 of clubs, 8 of hearts,
+Q of spades, 8 of hearts, 2 of clubs, Q of spades, Q of spades, T of clubs,
+8 of hearts, 2 of clubs, 2 of clubs, 4 of diamonds, 8 of hearts, 8 of hearts,
+4 of diamonds, T of clubs, T of clubs, T of clubs, 8 of hearts, 2 of clubs,
+2 of clubs, Q of spades, T of clubs, 8 of hearts, Q of spades, 2 of clubs,
+4 of diamonds, 8 of hearts, 2 of clubs, 8 of hearts, T of clubs, 8 of hearts,
+2 of clubs, Q of spades)
+
+Testing inspectCard()
+4 of diamonds
+** invalid **
+
+Playing Q of spades
+Playing 2 of clubs
+Playing 8 of hearts
+Playing T of clubs
+Playing 8 of hearts
+Playing 2 of clubs
+Playing 8 of hearts
+Playing 4 of diamonds
+Playing 2 of clubs
+Playing Q of spades
+Playing 8 of hearts
+Playing T of clubs
+Playing Q of spades
+Playing 2 of clubs
+Playing 2 of clubs
+Playing 8 of hearts
+Playing T of clubs
+Playing T of clubs
+Playing T of clubs
+Playing 4 of diamonds
+Playing 8 of hearts
+Playing 8 of hearts
+Playing 4 of diamonds
+Playing 2 of clubs
+Playing 2 of clubs
+Playing 8 of hearts
+Playing T of clubs
+Playing Q of spades
+Playing Q of spades
+Playing 2 of clubs
+Playing 8 of hearts
+Playing Q of spades
+Playing 8 of hearts
+Playing 2 of clubs
+Playing T of clubs
+Playing 4 of diamonds
+Playing T of clubs
+Playing T of clubs
+Playing Q of spades
+Playing 8 of hearts
+Playing T of clubs
+Playing 8 of hearts
+Playing 8 of hearts
+Playing 2 of clubs
+Playing 4 of diamonds
+Playing T of clubs
+Playing Q of spades
+Playing T of clubs
+Playing 8 of hearts
+Playing 8 of hearts
+Hand = ()
+
+K of spades / Q of spades / J of spades / T of spades / 9 of spades / 8 of spades / 7 of spades / 6 of spades / 5 of spades / 4 of spades / 3 of spades / 2 of spades / A of spades / K of hearts / Q of hearts / J of hearts / T of hearts / 9 of hearts / 8 of hearts / 7 of hearts / 6 of hearts / 5 of hearts / 4 of hearts / 3 of hearts / 2 of hearts / A of hearts / K of diamonds / Q of diamonds / J of diamonds / T of diamonds / 9 of diamonds / 8 of diamonds / 7 of diamonds / 6 of diamonds / 5 of diamonds / 4 of diamonds / 3 of diamonds / 2 of diamonds / A of diamonds / K of clubs / Q of clubs / J of clubs / T of clubs / 9 of clubs / 8 of clubs / 7 of clubs / 6 of clubs / 5 of clubs / 4 of clubs / 3 of clubs / 2 of clubs / A of clubs / K of spades / Q of spades / J of spades / T of spades / 9 of spades / 8 of spades / 7 of spades / 6 of spades / 5 of spades / 4 of spades / 3 of spades / 2 of spades / A of spades / K of hearts / Q of hearts / J of hearts / T of hearts / 9 of hearts / 8 of hearts / 7 of hearts / 6 of hearts / 5 of hearts / 4 of hearts / 3 of hearts / 2 of hearts / A of hearts / K of diamonds / Q of diamonds / J of diamonds / T of diamonds / 9 of diamonds / 8 of diamonds / 7 of diamonds / 6 of diamonds / 5 of diamonds / 4 of diamonds / 3 of diamonds / 2 of diamonds / A of diamonds / K of clubs / Q of clubs / J of clubs / T of clubs / 9 of clubs / 8 of clubs / 7 of clubs / 6 of clubs / 5 of clubs / 4 of clubs / 3 of clubs / 2 of clubs / A of clubs / 
+
+K of hearts / 4 of diamonds / Q of spades / 2 of clubs / 3 of diamonds / A of diamonds / K of diamonds / 9 of spades / Q of hearts / Q of clubs / J of clubs / 2 of hearts / 7 of hearts / K of spades / 2 of hearts / A of clubs / 5 of hearts / 8 of diamonds / 4 of hearts / 2 of diamonds / A of hearts / 8 of spades / 2 of spades / K of diamonds / J of diamonds / 9 of hearts / K of clubs / 6 of diamonds / 7 of spades / 5 of diamonds / A of hearts / 7 of hearts / A of clubs / 9 of hearts / 3 of spades / K of hearts / 5 of clubs / 4 of diamonds / J of clubs / Q of diamonds / A of diamonds / Q of hearts / J of hearts / 7 of spades / 5 of spades / J of spades / 8 of clubs / T of hearts / 2 of clubs / T of hearts / 8 of clubs / 2 of diamonds / 4 of spades / K of spades / 8 of hearts / K of clubs / 8 of hearts / J of hearts / 4 of hearts / 9 of spades / 3 of diamonds / 4 of clubs / 4 of clubs / 3 of clubs / 6 of hearts / T of spades / T of spades / 3 of spades / Q of clubs / A of spades / T of diamonds / 7 of diamonds / 9 of clubs / 6 of clubs / 3 of clubs / 7 of clubs / 4 of spades / 7 of clubs / Q of spades / 7 of diamonds / 3 of hearts / 6 of clubs / A of spades / 2 of spades / 6 of spades / 9 of clubs / 8 of spades / T of clubs / 6 of diamonds / 8 of diamonds / Q of diamonds / 5 of hearts / 9 of diamonds / J of diamonds / 9 of diamonds / 6 of hearts / 5 of diamonds / J of spades / T of clubs / 6 of spades / 5 of clubs / T of diamonds / 5 of spades / 3 of hearts / 
+
+K of spades / Q of spades / J of spades / T of spades / 9 of spades / 8 of spades / 7 of spades / 6 of spades / 5 of spades / 4 of spades / 3 of spades / 2 of spades / A of spades / K of hearts / Q of hearts / J of hearts / T of hearts / 9 of hearts / 8 of hearts / 7 of hearts / 6 of hearts / 5 of hearts / 4 of hearts / 3 of hearts / 2 of hearts / A of hearts / K of diamonds / Q of diamonds / J of diamonds / T of diamonds / 9 of diamonds / 8 of diamonds / 7 of diamonds / 6 of diamonds / 5 of diamonds / 4 of diamonds / 3 of diamonds / 2 of diamonds / A of diamonds / K of clubs / Q of clubs / J of clubs / T of clubs / 9 of clubs / 8 of clubs / 7 of clubs / 6 of clubs / 5 of clubs / 4 of clubs / 3 of clubs / 2 of clubs / A of clubs / 
+
+3 of hearts / Q of spades / 4 of diamonds / 5 of diamonds / A of clubs / 8 of clubs / 8 of spades / T of diamonds / 3 of clubs / J of clubs / 8 of hearts / 6 of diamonds / 4 of spades / 5 of spades / A of diamonds / A of hearts / 2 of clubs / 7 of clubs / Q of clubs / J of spades / 7 of spades / 7 of hearts / Q of diamonds / 2 of hearts / 2 of diamonds / 9 of spades / T of spades / 5 of clubs / 9 of clubs / 4 of clubs / 6 of clubs / J of diamonds / 6 of spades / 5 of hearts / K of spades / K of clubs / T of clubs / 3 of spades / 7 of diamonds / 2 of spades / 8 of diamonds / K of diamonds / 6 of hearts / J of hearts / T of hearts / 3 of diamonds / 9 of diamonds / Q of hearts / A of spades / 4 of hearts / K of hearts / 9 of hearts / 
+ 
+How many Hands? (1 to 10 please): 6
+Here are our hands from the unshuffled deck: 
+Hand = (K of spades, 7 of spades, A of spades, 8 of hearts, 2 of hearts, 9 of diamonds,
+3 of diamonds, T of clubs, 4 of clubs)
+
+Hand = (Q of spades, 6 of spades, K of hearts, 7 of hearts, A of hearts, 8 of diamonds,
+2 of diamonds, 9 of clubs, 3 of clubs)
+
+Hand = (J of spades, 5 of spades, Q of hearts, 6 of hearts, K of diamonds, 7 of diamonds,
+A of diamonds, 8 of clubs, 2 of clubs)
+
+Hand = (T of spades, 4 of spades, J of hearts, 5 of hearts, Q of diamonds, 6 of diamonds,
+K of clubs, 7 of clubs, A of clubs)
+
+Hand = (9 of spades, 3 of spades, T of hearts, 4 of hearts, J of diamonds, 5 of diamonds,
+Q of clubs, 6 of clubs)
+
+Hand = (8 of spades, 2 of spades, 9 of hearts, 3 of hearts, T of diamonds, 4 of diamonds,
+J of clubs, 5 of clubs)
+
+Here are our hands from the SHUFFLED deck: 
+Hand = (8 of hearts, 6 of spades, K of hearts, 4 of hearts, 8 of clubs, 3 of spades,
+Q of spades, 5 of hearts, Q of clubs)
+
+Hand = (K of diamonds, 7 of spades, J of spades, J of diamonds, 5 of diamonds, 2 of hearts,
+A of hearts, 9 of spades, 9 of clubs)
+
+Hand = (9 of hearts, 6 of hearts, 4 of clubs, K of spades, Q of hearts, T of diamonds,
+K of clubs, 2 of spades, 8 of diamonds)
+
+Hand = (4 of diamonds, 3 of clubs, 7 of diamonds, A of diamonds, A of clubs, 4 of spades,
+8 of spades, 2 of diamonds, Q of diamonds)
+
+Hand = (7 of clubs, A of spades, T of clubs, 3 of hearts, T of hearts, 2 of clubs,
+9 of diamonds, J of hearts)
+
+Hand = (3 of diamonds, 5 of spades, 6 of clubs, 5 of clubs, 7 of hearts, 6 of diamonds,
+J of clubs, T of spades)
+
+ ***********************************************************************************************/
