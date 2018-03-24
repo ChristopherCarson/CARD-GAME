@@ -1,7 +1,7 @@
 //Phase 2 BarcodeImage stores and retrieves 2D data (Raul and Chris)
 public class BarcodeImage implements Cloneable
 {
-   //Data for the class
+   //Variables for the class
    public static final int MAX_HEIGHT = 30;
    public static final int MAX_WIDTH = 65;
    private boolean[][] image_data; // 2D array for storing image data
@@ -21,23 +21,23 @@ public class BarcodeImage implements Cloneable
    
    }//End BarcodeImage()
    
-   //Our first over-loaded constructor, taking one String Variable as a parameter
-   public BarcodeImage(String[] string)
+   //Our first over-loaded constructor, taking our 1d string array as a parameter
+   public BarcodeImage(String[] stringArray)
    {
       image_data = new boolean[MAX_HEIGHT][MAX_WIDTH];
       int x, y, row = -1;//x and y coordinates, along with a row variable
       
       //We use our optional helper method here to insure the string is within proper
       //dimensions. Smaller is OK, larger or NULL is not.
-      if (checkSize(string))
+      if (checkSize(stringArray))
       {
          //for loop for each row in our image_data array
-         for (x = image_data.length - string.length; x < image_data.length; x++)
+         for (x = image_data.length - stringArray.length; x < image_data.length; x++)
          {
             row++;
-            for (y = 0; y < string[row].length(); y++)
+            for (y = 0; y < stringArray[row].length(); y++)
             {
-               if (string[row].charAt(y) == '*')
+               if (stringArray[row].charAt(y) == '*')
                {
                   setPixel(x, y, true);
                }
