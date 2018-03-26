@@ -543,6 +543,7 @@ class DataMatrix implements BarcodeIO
         image.displayToConsole();
     }
     
+    //Clears the barcode image completely by setting every value to false.
     private void clearImage() 
     {
         for(int x = 0; x < BarcodeImage.MAX_WIDTH; x++) 
