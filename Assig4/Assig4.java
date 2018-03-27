@@ -506,7 +506,7 @@ class DataMatrix implements BarcodeIO
         System.out.println(text);
     }
     
-    //Displays the image to the console.
+    //Displays the signal portion of the BarcodeImage in the console.
     public void displayImageToConsole() 
     {
         //Start at -1 to account for bordering.
@@ -539,7 +539,7 @@ class DataMatrix implements BarcodeIO
         }
     }
     
-    //Displays the raw image to the console.
+    //Displays the raw image in the console.
     public void displayRawImage() 
     {
         image.displayToConsole();
