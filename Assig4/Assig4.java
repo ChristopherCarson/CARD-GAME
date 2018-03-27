@@ -286,7 +286,6 @@ class DataMatrix implements BarcodeIO
     //Reads an inputted text string and after validation, sets it to the barcode text, but does not change image.
     public boolean readText(String text) 
     {
-        //First make sure the string is not null.
         try 
         {
             //Make sure that the text can fit within the limits of the barcode image.
