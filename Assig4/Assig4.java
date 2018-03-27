@@ -4,7 +4,6 @@
 //Begin class Assig4
 public class Assig4 
 {
-
 	public static void main(String[] args) 
 	{
 	   String[] sImageIn =
@@ -259,8 +258,9 @@ class DataMatrix implements BarcodeIO
         actualHeight = 0;    
     }
     
-    //Constructor - input is aBarcodeImage. Constructor scans the image to change it to standard format.
-    public DataMatrix(BarcodeImage image) {
+    //Constructor - input is a BarcodeImage. Constructor scans the image to change it to standard format.
+    public DataMatrix(BarcodeImage image) 
+    {
         text = "undefined";
         scan(image);
     }
