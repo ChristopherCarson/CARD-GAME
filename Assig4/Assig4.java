@@ -465,9 +465,11 @@ class DataMatrix implements BarcodeIO
 	int startIndex = BarcodeImage.MAX_HEIGHT - SIGNAL_ROW_VALUES.length - 2; //2 to account for border lines.
         for(int y = 0; y + startIndex + 2 < BarcodeImage.MAX_HEIGHT; y++)
         {
-            image.setPixel(col, y + startIndex + 1, code / SIGNAL_ROW_VALUES[y] == 1);
-            if(code / SIGNAL_ROW_VALUES[y] == 1)
+	    //Sets the flag for each row of the column if the code is greater or equal than the value assigned to that row.
+            image.setPixel(col, y + startIndex + 1, code >= SIGNAL_ROW_VALUES[y]);
+            if(code >= SIGNAL_ROW_VALUES[y])
             {
+	    	//Subtract the value for the row and move to the next row.
                 code = code - SIGNAL_ROW_VALUES[y];
             }
         }
