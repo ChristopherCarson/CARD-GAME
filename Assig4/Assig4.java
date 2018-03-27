@@ -238,7 +238,11 @@ class DataMatrix implements BarcodeIO
 {
     //Global variables that represent the images for a boolean value.
     public static final char BLACK_CHAR = '*';
-    public static final char WHITE_CHAR = ' ';
+    public static final char WHITE_CHAR = ' '; 
+    
+    //Global variable that represents the value of each row in a signal.
+    //Each row value represents a power of 2 starting at 7 (2^7 = 128) at the top and ending with 0.
+    private static final int[] SIGNAL_ROW_VALUES = {128,64,32,16,8,4,2,1};
     
     //Private variables
     private BarcodeImage image;
@@ -367,8 +371,8 @@ class DataMatrix implements BarcodeIO
     //Shifts the image towards the left using an offset value that represents the distance from the left.
     private void shiftImageLeft(int offset)
     {
-        if(offset > 0) {
-            for(int x = 0; x < BarcodeImage.MAX_WIDTH; x++) 
+          if(offset > 0) {
+              for(int x = 0; x < BarcodeImage.MAX_WIDTH; x++) 
             {
                 for(int y = 0; y < BarcodeImage.MAX_HEIGHT; y++) 
                 {
@@ -414,14 +418,15 @@ class DataMatrix implements BarcodeIO
     //Converts the text value into a barcode image.
     public boolean generateImageFromText() 
     {
+	  int start_index = BarcodeImage.MAX_HEIGHT - SIGNAL_ROW_VALUES.length - 2;
         clearImage();
         for(int x = 0; x <= text.length() + 1; x++) {
-            for(int y = BarcodeImage.MAX_HEIGHT - 10; y < BarcodeImage.MAX_HEIGHT; y++) {
+            for(int y = start_index; y < BarcodeImage.MAX_HEIGHT; y++) {
                 if(x == 0 || y == BarcodeImage.MAX_HEIGHT - 1) 
                 {
                     image.setPixel(x,y,true);
                 }
-                else if (y == BarcodeImage.MAX_HEIGHT - 10)
+                else if (y == start_index)
                 {
                     image.setPixel(x,y,x % 2 == 0);
                 }
@@ -444,14 +449,13 @@ class DataMatrix implements BarcodeIO
     //Writes the character to the signal column based on its ascii value.
     private boolean WriteCharToCol(int col, int code) 
     {
-        int[] factors = {128,64,32,16,8,4,2,1};
-
-        for(int y = 0; y < factors.length; y++)
+	  int start_index = BarcodeImage.MAX_HEIGHT - SIGNAL_ROW_VALUES.length - 2; //2 to account for border lines.
+        for(int y = 0; y + start_index + 2 < BarcodeImage.MAX_HEIGHT; y++)
         {
-            image.setPixel(col, BarcodeImage.MAX_HEIGHT - 9 + y, code / factors[y] == 1);
-            if(code / factors[y] == 1)
+            image.setPixel(col, y + start_index + 1, code / SIGNAL_ROW_VALUES[y] == 1);
+            if(code / SIGNAL_ROW_VALUES[y] == 1)
             {
-                code = code - factors[y];
+                code = code - SIGNAL_ROW_VALUES[y];
             }
         }
         return code == 0;
@@ -472,31 +476,14 @@ class DataMatrix implements BarcodeIO
     private char readCharFromCol(int col)
     {
         int colSum = 0;
-        for(int y = 0; y < actualHeight; y++) 
+        for(int y = 1; y < actualHeight - 1; y++)
         {
             if(image.getPixel(col, BarcodeImage.MAX_HEIGHT - actualHeight + y))
             {
-                colSum += getRowValue(y);
+                colSum += SIGNAL_ROW_VALUES[y - 1];
             }
         }
         return (char)colSum;
-    }
-    
-    //Returns a value based on the row of the signal. 
-    private int getRowValue(int value)
-    {
-        switch (value) 
-        {
-            case 1: return 128;
-            case 2: return 64;
-            case 3: return 32;
-            case 4: return 16;
-            case 5: return 8;
-            case 6: return 4;
-            case 7: return 2;
-            case 8: return 1;
-            default: return 0;
-        }
     }
     
     //Displays the text to the console.
@@ -543,7 +530,6 @@ class DataMatrix implements BarcodeIO
         image.displayToConsole();
     }
     
-    //Clears the barcode image completely by setting every value to false.
     private void clearImage() 
     {
         for(int x = 0; x < BarcodeImage.MAX_WIDTH; x++) 
