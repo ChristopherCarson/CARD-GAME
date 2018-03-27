@@ -259,13 +259,13 @@ class DataMatrix implements BarcodeIO
         actualHeight = 0;    
     }
     
-    //Constructor - BarcodeImage. Constructor scans the image to change it to standard format.
+    //Constructor - input is aBarcodeImage. Constructor scans the image to change it to standard format.
     public DataMatrix(BarcodeImage image) {
         text = "undefined";
         scan(image);
     }
     
-    //Constructor - Text. Sets the text, but does not create the image based on the text.
+    //Constructor - input is a text string. Sets the text, but does not create the image based on the text.
     public DataMatrix(String text) 
     {
         image = new BarcodeImage();
@@ -283,7 +283,7 @@ class DataMatrix implements BarcodeIO
         return actualHeight;
     }
     
-    //Reads a text string and after validation, sets it to the barcode text, but does not change image.
+    //Reads an inputted text string and after validation, sets it to the barcode text, but does not change image.
     public boolean readText(String text) 
     {
         //First make sure the string is not null.
@@ -305,7 +305,7 @@ class DataMatrix implements BarcodeIO
         }
     }
     
-    //Scans a barcode image and puts it into a standard format for further manipulation.
+    //Scans an inputted BarcodeImage and puts it into a standard format for further manipulation.
     public boolean scan(BarcodeImage image) 
     {
         //First, create a copy of the image parameter.
@@ -350,12 +350,13 @@ class DataMatrix implements BarcodeIO
         }
     }
     
-    //Shifts the image downwards using an offset value that represents the distance from the bottom.
+    //Shifts the image downwards using an inputted offset value that represents the distance from the bottom.
     private void shiftImageDown(int offset) 
     {
     	//Greater than 0, because we only want to move downwards.
         if(offset > 0) 
 	{
+	    //Shift the image.
             for(int x = 0; x  < BarcodeImage.MAX_WIDTH; x++) 
             {
                 for(int y = BarcodeImage.MAX_HEIGHT - 1; y >= 0; y--) //Start at the bottom.
@@ -373,12 +374,13 @@ class DataMatrix implements BarcodeIO
         }
     }
     
-    //Shifts the image towards the left using an offset value that represents the distance from the left.
+    //Shifts the image towards the left using an inputted offset value that represents the distance from the left.
     private void shiftImageLeft(int offset)
     {
         //Greater than 0, because we only want to move left.
         if(offset > 0) 
 	{
+	    //Shift the image.
             for(int x = 0; x < BarcodeImage.MAX_WIDTH; x++) 
             {
                 for(int y = 0; y < BarcodeImage.MAX_HEIGHT; y++) 
@@ -459,7 +461,8 @@ class DataMatrix implements BarcodeIO
         return true;
     }
     
-    //Converts an ascii character into a signal column based on its numeric ascii value.
+    //Converts an ascii character into a signal column.
+    //Uses a specified location(col) and an inputted ascii code.
     private boolean WriteCharToCol(int col, int code) 
     {
 	int startIndex = BarcodeImage.MAX_HEIGHT - SIGNAL_ROW_VALUES.length - 2; //2 to account for border lines.
@@ -487,7 +490,8 @@ class DataMatrix implements BarcodeIO
         return text != "" && text != null;
     }
     
-    //Returns a character by evaluating the total ascii value of one column in the signal.
+    //Returns a character from a specified signal column.
+    //Uses the sum of each row value in that column to generate an ascii code.
     private char readCharFromCol(int col)
     {
         int colSum = 0;
@@ -545,6 +549,7 @@ class DataMatrix implements BarcodeIO
         image.displayToConsole();
     }
     
+    //Sets every pixel in the BarcodeImage to white.
     private void clearImage() 
     {
         for(int x = 0; x < BarcodeImage.MAX_WIDTH; x++) 
