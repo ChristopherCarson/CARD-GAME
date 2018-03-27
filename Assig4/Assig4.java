@@ -236,7 +236,7 @@ class BarcodeImage implements Cloneable
 //Class represents the DataMatrix for a Barcode Image.
 class DataMatrix implements BarcodeIO 
 {
-    //Global variables that represent the images for a boolean value.
+    //Global variables that represent the images for a boolean value in the barcode.
     public static final char BLACK_CHAR = '*';
     public static final char WHITE_CHAR = ' '; 
     
@@ -247,9 +247,10 @@ class DataMatrix implements BarcodeIO
     //Private variables
     private BarcodeImage image;
     private String text;
-    private int actualWidth, actualHeight;
+    private int actualWidth, actualHeight; //Dimensions of the signal only.
     
     //Constructors
+    //Constructor - No Parameters. Creates blank image and text.
     public DataMatrix() 
     {
         image = new BarcodeImage();
@@ -258,11 +259,13 @@ class DataMatrix implements BarcodeIO
         actualHeight = 0;    
     }
     
+    //Constructor - BarcodeImage. Constructor scans the image to change it to standard format.
     public DataMatrix(BarcodeImage image) {
         text = "undefined";
         scan(image);
     }
     
+    //Constructor - Text. Sets the text, but does not create the image based on the text.
     public DataMatrix(String text) 
     {
         image = new BarcodeImage();
@@ -287,7 +290,7 @@ class DataMatrix implements BarcodeIO
         try 
         {
             //Make sure that the text can fit within the limits of the barcode image.
-            if(text.length() < BarcodeImage.MAX_WIDTH - 2) 
+            if(text.length() < BarcodeImage.MAX_WIDTH - 2) //-2 to account for borders.
             {
                 this.text = text;
                 return true;
@@ -305,7 +308,7 @@ class DataMatrix implements BarcodeIO
     //Scans a barcode image and puts it into a standard format for further manipulation.
     public boolean scan(BarcodeImage image) 
     {
-        //First, create a clone of the of the current image.
+        //First, create a copy of the image parameter.
         try 
         {
             this.image = (BarcodeImage)image.clone();
@@ -350,10 +353,12 @@ class DataMatrix implements BarcodeIO
     //Shifts the image downwards using an offset value that represents the distance from the bottom.
     private void shiftImageDown(int offset) 
     {
-        if(offset > 0) {
+    	//Greater than 0, because we only want to move downwards.
+        if(offset > 0) 
+	{
             for(int x = 0; x  < BarcodeImage.MAX_WIDTH; x++) 
             {
-                for(int y = BarcodeImage.MAX_HEIGHT - 1; y >= 0; y--) 
+                for(int y = BarcodeImage.MAX_HEIGHT - 1; y >= 0; y--) //Start at the bottom.
                 {
                     if(y - offset >= 0)
                     {
@@ -371,8 +376,10 @@ class DataMatrix implements BarcodeIO
     //Shifts the image towards the left using an offset value that represents the distance from the left.
     private void shiftImageLeft(int offset)
     {
-          if(offset > 0) {
-              for(int x = 0; x < BarcodeImage.MAX_WIDTH; x++) 
+        //Greater than 0, because we only want to move left.
+        if(offset > 0) 
+	{
+            for(int x = 0; x < BarcodeImage.MAX_WIDTH; x++) 
             {
                 for(int y = 0; y < BarcodeImage.MAX_HEIGHT; y++) 
                 {
@@ -393,6 +400,7 @@ class DataMatrix implements BarcodeIO
     private int computeSignalHeight()
     {
         int y;
+	//Follow the left edge of the signal from the bottom until we hit whitespace.
         for(y = BarcodeImage.MAX_HEIGHT - 1; y >= 0; y--) 
         {
             if(!this.image.getPixel(0, y)) { 
@@ -406,6 +414,7 @@ class DataMatrix implements BarcodeIO
     private int computeSignalWidth()
     {
         int x;
+	//Follow the bottom edge of the signal from the left until we hit whitespace.
         for(x = 0; x < BarcodeImage.MAX_WIDTH; x++) 
         {
             if(!this.image.getPixel(x, BarcodeImage.MAX_HEIGHT - 1)) {
@@ -418,22 +427,26 @@ class DataMatrix implements BarcodeIO
     //Converts the text value into a barcode image.
     public boolean generateImageFromText() 
     {
-	int startIndex = BarcodeImage.MAX_HEIGHT - SIGNAL_ROW_VALUES.length - 2;
+	int startIndex = BarcodeImage.MAX_HEIGHT - SIGNAL_ROW_VALUES.length - 2; //-2 for borders.
         clearImage();
         for(int x = 0; x <= text.length() + 1; x++) {
             for(int y = startIndex; y < BarcodeImage.MAX_HEIGHT; y++) {
+	        //Add border on left and bottom of signal.
                 if(x == 0 || y == BarcodeImage.MAX_HEIGHT - 1) 
                 {
                     image.setPixel(x,y,true);
                 }
+		//Add border on top of signal.
                 else if (y == startIndex)
                 {
                     image.setPixel(x,y,x % 2 == 0);
                 }
+		//Add border on right of signal.
                 else if (x == text.length() + 1)
                 {
                     image.setPixel(x,y,y % 2 == 1);
                 }
+		//Add signal column values.
                 else 
                 {
                     WriteCharToCol(x, (int)text.charAt(x - 1));
@@ -446,7 +459,7 @@ class DataMatrix implements BarcodeIO
         return true;
     }
     
-    //Writes the character to the signal column based on its ascii value.
+    //Converts an ascii character into a signal column based on its numeric ascii value.
     private boolean WriteCharToCol(int col, int code) 
     {
 	int startIndex = BarcodeImage.MAX_HEIGHT - SIGNAL_ROW_VALUES.length - 2; //2 to account for border lines.
