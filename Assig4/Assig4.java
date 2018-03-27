@@ -418,15 +418,15 @@ class DataMatrix implements BarcodeIO
     //Converts the text value into a barcode image.
     public boolean generateImageFromText() 
     {
-	  int start_index = BarcodeImage.MAX_HEIGHT - SIGNAL_ROW_VALUES.length - 2;
+	int startIndex = BarcodeImage.MAX_HEIGHT - SIGNAL_ROW_VALUES.length - 2;
         clearImage();
         for(int x = 0; x <= text.length() + 1; x++) {
-            for(int y = start_index; y < BarcodeImage.MAX_HEIGHT; y++) {
+            for(int y = startIndex; y < BarcodeImage.MAX_HEIGHT; y++) {
                 if(x == 0 || y == BarcodeImage.MAX_HEIGHT - 1) 
                 {
                     image.setPixel(x,y,true);
                 }
-                else if (y == start_index)
+                else if (y == startIndex)
                 {
                     image.setPixel(x,y,x % 2 == 0);
                 }
@@ -449,10 +449,10 @@ class DataMatrix implements BarcodeIO
     //Writes the character to the signal column based on its ascii value.
     private boolean WriteCharToCol(int col, int code) 
     {
-	  int start_index = BarcodeImage.MAX_HEIGHT - SIGNAL_ROW_VALUES.length - 2; //2 to account for border lines.
-        for(int y = 0; y + start_index + 2 < BarcodeImage.MAX_HEIGHT; y++)
+	int startIndex = BarcodeImage.MAX_HEIGHT - SIGNAL_ROW_VALUES.length - 2; //2 to account for border lines.
+        for(int y = 0; y + startIndex + 2 < BarcodeImage.MAX_HEIGHT; y++)
         {
-            image.setPixel(col, y + start_index + 1, code / SIGNAL_ROW_VALUES[y] == 1);
+            image.setPixel(col, y + startIndex + 1, code / SIGNAL_ROW_VALUES[y] == 1);
             if(code / SIGNAL_ROW_VALUES[y] == 1)
             {
                 code = code - SIGNAL_ROW_VALUES[y];
