@@ -148,22 +148,14 @@ class CardTable extends JFrame
       
       //Validate and set the two instance variables.
       if(numCardsPerHand > 0 && numCardsPerHand <= MAX_CARDS_PER_HAND)
-      {
          this.numCardsPerHand = numCardsPerHand;
-      }
       else
-      {
          this.numCardsPerHand = 1;
-      }
       
       if(numPlayers > 0 && numPlayers <= MAX_PLAYERS)
-      {
          this.numPlayers = numPlayers;
-      }
       else
-      {
          this.numPlayers = 1;
-      }
 
       //Create the panel layout and add the 3 panels to the frame.
       setLayout(new GridBagLayout());
@@ -191,7 +183,7 @@ class CardTable extends JFrame
       gridConstraints.weighty = 0.0;
       gridConstraints.gridy = 2;
       add(pnlHumanHand, gridConstraints);
-   }//CardTable Constructor.
+   }//CardTable Constructor
    
    //Accessors
    public int getCardsPerHand()
