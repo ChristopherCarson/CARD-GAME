@@ -1,7 +1,10 @@
+//Assignment 5 CST 338
+//John Coffelt, Michael Rose, Christopher Carson, Raul Ramirez
 import javax.swing.*;
 import java.util.Random;
 import java.awt.*;
-   
+ 
+//Phase 2 - John Coffelt
 public class Assign5Phase2
 {
    static int NUM_CARDS_PER_HAND = 7;
