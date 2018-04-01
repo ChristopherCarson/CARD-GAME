@@ -121,10 +121,10 @@ public class Assign5Phase2
       randInt = rand.nextInt(3);
       switch(randInt)
       {
-            case 0: return new Card(value, Card.Suit.clubs);
-            case 1: return new Card(value, Card.Suit.diamonds);
-            case 2: return new Card(value, Card.Suit.hearts);
-            default: return new Card(value, Card.Suit.spades);
+         case 0: return new Card(value, Card.Suit.clubs);
+         case 1: return new Card(value, Card.Suit.diamonds);
+         case 2: return new Card(value, Card.Suit.hearts);
+         default: return new Card(value, Card.Suit.spades);
       }
    }
 }
