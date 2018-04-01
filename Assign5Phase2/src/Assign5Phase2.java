@@ -191,7 +191,7 @@ class CardTable extends JFrame
       gridConstraints.weighty = 0.0;
       gridConstraints.gridy = 2;
       add(pnlHumanHand, gridConstraints);
-   }
+   }//CardTable Constructor.
    
    //Accessors
    public int getCardsPerHand()
