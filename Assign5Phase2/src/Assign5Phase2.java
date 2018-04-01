@@ -126,8 +126,8 @@ public class Assign5Phase2
          case 2: return new Card(value, Card.Suit.hearts);
          default: return new Card(value, Card.Suit.spades);
       }
-   }
-}
+   }//End GenerateRandomCard
+}//End Main
 
 //CardTable - Class represents the GUI for a card table.
 class CardTable extends JFrame
@@ -294,7 +294,7 @@ class GUICard
          default: return -1;
       }
    }
-}
+}//End GUICard Class
 
 //Card class represents a single playing card consisting of a suit and a value (Ex. Ace of Spades).
 class Card
