@@ -534,10 +534,10 @@ class Hand
 class Deck
 {
    //Member variables
-   public static final int MAX_CARDS = 6 * 56;
    public static final int CARDS_IN_PACK = 56;
+   public static final int MAX_CARDS = 6 * CARDS_IN_PACK;
    
-   private static Card[] masterPack = new Card[56]; //Standard cards + 4 jokers.
+   private static Card[] masterPack = new Card[CARDS_IN_PACK]; //Standard cards + 4 jokers.
    private Card[] cards = new Card[MAX_CARDS];
    private int topCard, numPacks;
    
@@ -552,7 +552,7 @@ class Deck
       topCard = (CARDS_IN_PACK * numPacks) - 1;
       for(int i = 0; i <= topCard; i++)
       {
-         cards[i] = masterPack[i % 52];
+         cards[i] = masterPack[i % CARDS_IN_PACK];
       }
    }
    
@@ -574,7 +574,7 @@ class Deck
       topCard = (CARDS_IN_PACK * this.numPacks) - 1;
       for(int i = 0; i <= topCard; i++)
       {
-         cards[i] = masterPack[i%CARDS_IN_PACK];
+         cards[i] = masterPack[i % CARDS_IN_PACK];
       }
    }
    
