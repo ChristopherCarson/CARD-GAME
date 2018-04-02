@@ -426,8 +426,8 @@ class Hand
 {
    //Our public and private variables
    public static final int MAX_CARDS = 50;
-   private static Card[] myCards = new Card[MAX_CARDS];
-   private static int numCards;
+   private Card[] myCards = new Card[MAX_CARDS];
+   private int numCards;
    
    //The Constructor
    public Hand()
@@ -513,7 +513,7 @@ class Hand
    }
    
    //Method to return the card from a position in the hand
-   public static Card inspectCard(int k)
+   public Card inspectCard(int k)
    {  
       if (k <= numCards)
       {
