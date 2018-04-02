@@ -428,9 +428,9 @@ class Card
 class Hand
 {
    //Our public and private variables
-   public final int MAX_CARDS = 50;
-   private Card[] myCards = new Card[MAX_CARDS];
-   private int numCards;
+   public static final int MAX_CARDS = 50;
+   private static Card[] myCards = new Card[MAX_CARDS];
+   private static int numCards;
    
    //The Constructor
    public Hand()
@@ -453,7 +453,8 @@ class Hand
    {
       if (numCards < MAX_CARDS)
       {
-         myCards[numCards] = card;
+         Card newCard = card;
+         myCards[numCards] = newCard;
          numCards++;
          return true;
       }
@@ -464,11 +465,11 @@ class Hand
    }
    
    //A method to play a card, removing it from the hand
-   public Card playCard()
+   public Card playCard(int cardIndex)
    {
       numCards--;
-      Card returnCard = myCards[numCards];
-      myCards[numCards] = null;
+      Card returnCard = myCards[cardIndex];
+      myCards[cardIndex] = null;
       
       return returnCard;
    }
@@ -515,7 +516,7 @@ class Hand
    }
    
    //Method to return the card from a position in the hand
-   public Card inspectCard(int k)
+   public static Card inspectCard(int k)
    {  
       if (k <= numCards)
       {
@@ -566,7 +567,7 @@ class Deck
       }
    }
    
-   //Re-populate cards[] with the standard 52 �~ numPacks cards.
+   //Re-populate cards[] with the standard 52 x numPacks cards.
    public void init(int numPacks)
    {
       this.numPacks = numPacks;
