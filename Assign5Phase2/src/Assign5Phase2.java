@@ -466,7 +466,8 @@ class Hand
    {
       numCards--;
       Card returnCard = myCards[cardIndex];
-      myCards[cardIndex] = null;
+      myCards[cardIndex] = myCards[numCards];
+      myCards[numCards] = null;
       
       return returnCard;
    }
