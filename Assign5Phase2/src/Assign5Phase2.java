@@ -22,10 +22,7 @@ public class Assign5Phase2
       myCardTable.setSize(800, 600);
       myCardTable.setLocationRelativeTo(null);
       myCardTable.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-      // show everything to the user
-      myCardTable.setVisible(true);
-      
+    
       // CREATE LABELS ----------------------------------------------------
       //Computer and Player Hand.
       for(int i = 0; i < NUM_CARDS_PER_HAND; i++) 
