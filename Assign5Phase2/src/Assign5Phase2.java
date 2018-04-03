@@ -305,7 +305,7 @@ class Card
    private boolean errorFlag;
    
    //public variable for the rank of each card value.
-   public static char[] valuRanks = {'X','A','2','3','4','5','6','7',
+   private static char[] valuRanks = {'X','A','2','3','4','5','6','7',
          '8','9','T','J','Q','K'};
    
    //Constructor that sets suit and value for card
@@ -395,7 +395,7 @@ class Card
    }
    
    //Takes a card and returns the rank of its value.
-   private static int getCardValueRank(Card card)
+   public static int getCardValueRank(Card card)
    {
       int i;
       for(i = 0; i < valuRanks.length; i++)
