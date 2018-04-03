@@ -134,8 +134,8 @@ public class Assign5Phase3
       // show everything to the user
       myCardTable.setVisible(true);
       
-      //Clicking no will result in the dialog box popping up again.
-      //Click yes to close the program.
+      //Clicking yes will result in the dialog box popping up again.
+      //Click no to close the program.
       int result = JOptionPane.YES_OPTION;
       while(result == JOptionPane.YES_OPTION)
       {
