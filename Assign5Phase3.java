@@ -37,7 +37,7 @@ public class Assign5Phase3
       Card[] unusedCardsPerPack = null;
       
       //variables for game
-      boolean humanFirst = true;
+      boolean humanFirst = true, cardPlayed = false;
       int player1Score = 0, player2Score = 0;
       Scanner scan = new Scanner(System.in);
       Random rand = new Random();
@@ -102,7 +102,7 @@ public class Assign5Phase3
       //Add icons first...
       for(int i = 0; i < NUM_PLAYERS; i++)
       {
-         playedCardLabels[i].setVisible(true);
+         playedCardLabels[i].setVisible(false);
          playedCardLabels[i].setHorizontalAlignment(JLabel.CENTER);
          myCardTable.pnlPlayArea.add(playedCardLabels[i]);
       }
@@ -134,11 +134,15 @@ public class Assign5Phase3
                index = scan.nextInt();
             }
             Card playedCard = highCardGame.playCard(1, index);
-            
+            myCardTable.pnlHumanHand.remove(index);
+            playedCardLabels[1].setIcon(GUICard.getIcon(playedCard));
 
             int randInt = rand.nextInt(highCardGame.getHand(0).getNumCards());
             
             Card comPlayedCard = highCardGame.playCard(0,randInt);
+            playedCardLabels[0].setIcon(GUICard.getIcon(comPlayedCard));
+            myCardTable.pnlComputerHand.remove(0);
+            
             System.out.println("Computer played: " + comPlayedCard);
             if(playedCard.getValue() > comPlayedCard.getValue())
             {
@@ -163,6 +167,8 @@ public class Assign5Phase3
          {
             int randInt = rand.nextInt(highCardGame.getHand(0).getNumCards());
             Card comPlayedCard = highCardGame.playCard(0,randInt);
+            myCardTable.pnlComputerHand.remove(0);
+            playedCardLabels[0].setIcon(GUICard.getIcon(comPlayedCard));
             
             System.out.println("Computer played: " + comPlayedCard);
             
@@ -175,6 +181,8 @@ public class Assign5Phase3
                index = scan.nextInt();
             }
             Card playedCard = highCardGame.playCard(1, index);
+            myCardTable.pnlHumanHand.remove(index);
+            playedCardLabels[1].setIcon(GUICard.getIcon(playedCard));
             
             if(playedCard.getValue() > comPlayedCard.getValue())
             {
@@ -195,7 +203,11 @@ public class Assign5Phase3
                player2Score = player2Score + 1;
             }
          }
-         myCardTable.revalidate();
+         playedCardLabels[0].setVisible(true);
+         playedCardLabels[1].setVisible(true);
+         playLabelText[0].setText("Computer's Score: " + player1Score);
+         playLabelText[1].setText("Your Score: " + player2Score);
+         myCardTable.validate();
          myCardTable.repaint();
       }
       System.out.println("Game over");
@@ -207,7 +219,6 @@ public class Assign5Phase3
          System.out.println("Tie\nYour score was: " + player2Score + "\nComputer's Score was: " + player1Score);
       scan.close();
    }
-   
    
    //Returns a randomly selected card.
    static private Card generateRandomCard()
