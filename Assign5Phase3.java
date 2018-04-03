@@ -134,6 +134,8 @@ public class Assign5Phase3
       // show everything to the user
       myCardTable.setVisible(true);
       
+      //Clicking no will result in the dialog box popping up again.
+      //Click yes to close the program.
       int result = JOptionPane.YES_OPTION;
       while(result == JOptionPane.YES_OPTION)
       {
@@ -160,14 +162,15 @@ public class Assign5Phase3
       int returnIndex = 0;
       Hand compHand = comHand;
       Card checkCard = playedCard;
-      int checkCardRank = checkCard.getCardValueRank(checkCard);
+      int checkCardRank = Card.getCardValueRank(checkCard);
       boolean cardChanged = false;
       
       for(int i = 0; i < compHand.getNumCards(); i++)
       {
-         Card currentCard = compHand.inspectCard(i);
-         int handRank = compHand.inspectCard(i).getCardValueRank(compHand.inspectCard(i));
-         if(handRank > checkCardRank && handRank < compHand.inspectCard(returnIndex).getCardValueRank(compHand.inspectCard(returnIndex)))
+         compHand.inspectCard(i);
+         int handRank = Card.getCardValueRank(compHand.inspectCard(i));
+         compHand.inspectCard(returnIndex);
+         if(handRank > checkCardRank && handRank < Card.getCardValueRank(compHand.inspectCard(returnIndex)))
          {
             returnIndex = i;
             cardChanged = true;
@@ -177,8 +180,10 @@ public class Assign5Phase3
       {
          for(int i = 0; i < compHand.getNumCards(); i++)
          {
-            int handRank = compHand.inspectCard(i).getCardValueRank(compHand.inspectCard(i));
-            if(handRank < compHand.inspectCard(returnIndex).getCardValueRank(compHand.inspectCard(returnIndex))) 
+            compHand.inspectCard(i);
+            int handRank = Card.getCardValueRank(compHand.inspectCard(i));
+            compHand.inspectCard(returnIndex);
+            if(handRank < Card.getCardValueRank(compHand.inspectCard(returnIndex))) 
             {
                returnIndex = i;
             }
