@@ -5,13 +5,14 @@ import java.util.Random;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Scanner;
  
-//Phase 3 - Michael
+//Phase 3 - Michael Rose
 public class Assign5Phase3
 {
    static int NUM_CARDS_PER_HAND = 7;
    static int  NUM_PLAYERS = 2;
+   static final int HUMAN_PLAYER1 = 1;
+   static final int COMPUTER_PLAYER1 = 0;
    static JLabel[] computerLabels = new JLabel[NUM_CARDS_PER_HAND];
    static ImageIcon[] humanLabels = new ImageIcon[NUM_CARDS_PER_HAND];  
    static JLabel[] playedCardLabels  = new JLabel[NUM_PLAYERS]; 
@@ -37,15 +38,12 @@ public class Assign5Phase3
       Card[] unusedCardsPerPack = null;
       
       //variables for game
-      boolean humanFirst = true;
-      Scanner scan = new Scanner(System.in);
-      Random rand = new Random();
-
       CardGameFramework highCardGame = new CardGameFramework( 
             numPacksPerDeck, numJokersPerPack,  
             numUnusedCardsPerPack, unusedCardsPerPack, 
             NUM_PLAYERS, NUM_CARDS_PER_HAND);
       
+      highCardGame.newGame();
       highCardGame.deal();
       // CREATE LABELS ----------------------------------------------------
       //Computer and Player Hand.
@@ -59,22 +57,22 @@ public class Assign5Phase3
             public void actionPerformed(ActionEvent e)
             {
                int cardIndex = 0;
-               for(int i = 0; i < highCardGame.getHand(1).getNumCards(); i++)
+               for(int i = 0; i < highCardGame.getHand(HUMAN_PLAYER1).getNumCards(); i++)
                {
                   if(e.getSource() == myCardTable.pnlHumanHand.getComponent(i))
                      cardIndex = i;
                }
                
-               Card playerCard = highCardGame.playCard(1, cardIndex);
-               playedCardLabels[1].setIcon(GUICard.getIcon(playerCard));
-               playedCardLabels[1].setVisible(true);
+               Card playerCard = highCardGame.playCard(HUMAN_PLAYER1, cardIndex);
+               playedCardLabels[HUMAN_PLAYER1].setIcon(GUICard.getIcon(playerCard));
+               playedCardLabels[HUMAN_PLAYER1].setVisible(true);
                myCardTable.pnlHumanHand.remove(cardIndex);
                
-               int randint = rand.nextInt(highCardGame.getHand(0).getNumCards());
-               Card computerCard = highCardGame.playCard(0,randint);
-               playedCardLabels[0].setIcon(GUICard.getIcon(computerCard));
-               playedCardLabels[0].setVisible(true);
-               myCardTable.pnlComputerHand.remove(randint);
+               int index = comPlay(highCardGame.getHand(COMPUTER_PLAYER1), playerCard);
+               Card computerCard = highCardGame.playCard(COMPUTER_PLAYER1,index);
+               playedCardLabels[COMPUTER_PLAYER1].setIcon(GUICard.getIcon(computerCard));
+               playedCardLabels[COMPUTER_PLAYER1].setVisible(true);
+               myCardTable.pnlComputerHand.remove(index);
                
                int score = scoreCards(playerCard,computerCard);
                updateScore(score);
@@ -136,27 +134,65 @@ public class Assign5Phase3
       // show everything to the user
       myCardTable.setVisible(true);
       
-      //text version of high card game made to see if I could actually convert it into the GUI
-      //stops when both players are out of cards. ideally you want to stop when the deck and hands are empty.
-      while(highCardGame.getHand(0).getNumCards() > 0 || highCardGame.getHand(1).getNumCards() > 0)
+      int result = JOptionPane.YES_OPTION;
+      while(result == JOptionPane.YES_OPTION)
       {
+         
+         while(highCardGame.getHand(COMPUTER_PLAYER1).getNumCards() > 0 || highCardGame.getHand(HUMAN_PLAYER1).getNumCards() > 0)
+         {
+         }
+         String endMessage;
+         if(playerScores[COMPUTER_PLAYER1] > playerScores[1])
+            endMessage = "Computer wins!\nYour score was: " + playerScores[HUMAN_PLAYER1] + "\nComputer's Score was: " + playerScores[COMPUTER_PLAYER1];
+         else if(playerScores[COMPUTER_PLAYER1] < playerScores[1])
+            endMessage = "You win!\nYour score was: " + playerScores[HUMAN_PLAYER1] + "\nComputer's Score was: " + playerScores[COMPUTER_PLAYER1];
+         else
+            endMessage = "Tie!\nYour score was: " + playerScores[HUMAN_PLAYER1] + "\nComputer's Score was: " + playerScores[COMPUTER_PLAYER1];
+         endMessage = endMessage + "\nDo you want to play again?";
+         result = JOptionPane.showConfirmDialog(null, endMessage, "Game Over", JOptionPane.YES_NO_OPTION);
       }
-      System.out.println("Game over");
-      if(playerScores[0] > playerScores[1])
-         System.out.println("Computer wins\nYour score was: " + playerScores[1] + "\nComputer's Score was: " + playerScores[0]);
-      else if(playerScores[0] < playerScores[1])
-         System.out.println("You win\nYour score was: " + playerScores[1] + "\nComputer's Score was: " + playerScores[0]);
-      else
-         System.out.println("Tie\nYour score was: " + playerScores[1] + "\nComputer's Score was: " + playerScores[0]);
-      scan.close();
-   }
+      System.exit(0);
+      
+   }//end Main
+   
+   protected static int comPlay(Hand comHand, Card playedCard)
+   {
+      int returnIndex = 0;
+      Hand compHand = comHand;
+      Card checkCard = playedCard;
+      int checkCardRank = checkCard.getCardValueRank(checkCard);
+      boolean cardChanged = false;
+      
+      for(int i = 0; i < compHand.getNumCards(); i++)
+      {
+         Card currentCard = compHand.inspectCard(i);
+         int handRank = compHand.inspectCard(i).getCardValueRank(compHand.inspectCard(i));
+         if(handRank > checkCardRank && handRank < compHand.inspectCard(returnIndex).getCardValueRank(compHand.inspectCard(returnIndex)))
+         {
+            returnIndex = i;
+            cardChanged = true;
+         }
+      }
+      if(cardChanged == false)
+      {
+         for(int i = 0; i < compHand.getNumCards(); i++)
+         {
+            int handRank = compHand.inspectCard(i).getCardValueRank(compHand.inspectCard(i));
+            if(handRank < compHand.inspectCard(returnIndex).getCardValueRank(compHand.inspectCard(returnIndex))) 
+            {
+               returnIndex = i;
+            }
+         }
+      }
+      return returnIndex;
+   }//end comPlay
    
    protected static void updateScore(int score)
    {
       if(score == -1) 
-         playLabelText[0].setText("Computer's Score: " + ++playerScores[0]);
+         playLabelText[COMPUTER_PLAYER1].setText("Computer's Score: " + ++playerScores[COMPUTER_PLAYER1]);
       else
-         playLabelText[1].setText("Player's Score: " + ++playerScores[1]);
+         playLabelText[HUMAN_PLAYER1].setText("Player's Score: " + ++playerScores[HUMAN_PLAYER1]);
    }
 
    protected static int scoreCards(Card playerCard, Card computerCard)
