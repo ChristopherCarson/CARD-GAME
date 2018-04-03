@@ -77,6 +77,7 @@ public class Assign5Phase3
                int score = scoreCards(playerCard,computerCard);
                updateScore(score);
                
+
                myCardTable.revalidate();
                myCardTable.repaint();
             }
@@ -134,6 +135,7 @@ public class Assign5Phase3
       // show everything to the user
       myCardTable.setVisible(true);
       
+      //Game loop
       //Clicking yes will result in the dialog box popping up again.
       //Click no to close the program.
       int result = JOptionPane.YES_OPTION;
@@ -143,17 +145,19 @@ public class Assign5Phase3
          while(highCardGame.getHand(COMPUTER_PLAYER1).getNumCards() > 0 || highCardGame.getHand(HUMAN_PLAYER1).getNumCards() > 0)
          {
          }
+
          String endMessage;
-         if(playerScores[COMPUTER_PLAYER1] > playerScores[1])
+         if(playerScores[COMPUTER_PLAYER1] > playerScores[HUMAN_PLAYER1])
             endMessage = "Computer wins!\nYour score was: " + playerScores[HUMAN_PLAYER1] + "\nComputer's Score was: " + playerScores[COMPUTER_PLAYER1];
-         else if(playerScores[COMPUTER_PLAYER1] < playerScores[1])
+         else if(playerScores[COMPUTER_PLAYER1] < playerScores[HUMAN_PLAYER1])
             endMessage = "You win!\nYour score was: " + playerScores[HUMAN_PLAYER1] + "\nComputer's Score was: " + playerScores[COMPUTER_PLAYER1];
          else
             endMessage = "Tie!\nYour score was: " + playerScores[HUMAN_PLAYER1] + "\nComputer's Score was: " + playerScores[COMPUTER_PLAYER1];
          endMessage = endMessage + "\nDo you want to play again?";
          result = JOptionPane.showConfirmDialog(null, endMessage, "Game Over", JOptionPane.YES_NO_OPTION);
       }
-      System.exit(0);
+      if(result == JOptionPane.NO_OPTION)
+         System.exit(0);
       
    }//end Main
    
@@ -194,10 +198,21 @@ public class Assign5Phase3
    
    protected static void updateScore(int score)
    {
-      if(score == -1) 
-         playLabelText[COMPUTER_PLAYER1].setText("Computer's Score: " + ++playerScores[COMPUTER_PLAYER1]);
+      if(score == -1)
+      {
+         playerScores[COMPUTER_PLAYER1] +=2;
+         playLabelText[COMPUTER_PLAYER1].setText("Computer's Score: " + playerScores[COMPUTER_PLAYER1]);
+      }
+      else if(score == 1) 
+      {
+         playerScores[HUMAN_PLAYER1] +=2;
+         playLabelText[HUMAN_PLAYER1].setText("Player's Score: " + playerScores[HUMAN_PLAYER1]);
+      }
       else
+      {
+         playLabelText[COMPUTER_PLAYER1].setText("Computer's Score: " + ++playerScores[COMPUTER_PLAYER1]);
          playLabelText[HUMAN_PLAYER1].setText("Player's Score: " + ++playerScores[HUMAN_PLAYER1]);
+      }
    }
 
    protected static int scoreCards(Card playerCard, Card computerCard)
@@ -254,6 +269,7 @@ public class Assign5Phase3
    }//End GenerateRandomCard
    
 }//End Main
+
 //class CardGameFramework  ----------------------------------------------------
 class CardGameFramework
 {
