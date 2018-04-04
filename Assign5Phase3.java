@@ -199,9 +199,20 @@ public class Assign5Phase3
    protected static void updateScore(int score)
    {
       if(score == -1) 
+      {
+         playerScores[COMPUTER_PLAYER1] += 2;
+         playLabelText[COMPUTER_PLAYER1].setText("Computer's Score: " + playerScores[COMPUTER_PLAYER1]);
+      }
+      else if(score == 1)
+      {
+         playerScores[HUMAN_PLAYER1] +=2;
+         playLabelText[HUMAN_PLAYER1].setText("Player's Score: " + playerScores[HUMAN_PLAYER1]);
+      }
+      else if (score == 0)
+      {
          playLabelText[COMPUTER_PLAYER1].setText("Computer's Score: " + ++playerScores[COMPUTER_PLAYER1]);
-      else
          playLabelText[HUMAN_PLAYER1].setText("Player's Score: " + ++playerScores[HUMAN_PLAYER1]);
+      }
    }
 
    protected static int scoreCards(Card playerCard, Card computerCard)
