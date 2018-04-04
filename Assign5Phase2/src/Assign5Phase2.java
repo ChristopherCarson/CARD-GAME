@@ -537,6 +537,7 @@ class Deck
    //Member variables
    public static final int CARDS_IN_PACK = 56;
    public static final int MAX_CARDS = 6 * CARDS_IN_PACK;
+   public static final int MAX_PACKS = 6;
    
    private static Card[] masterPack = new Card[CARDS_IN_PACK]; //Standard cards + 4 jokers.
    private Card[] cards = new Card[MAX_CARDS];
@@ -571,7 +572,10 @@ class Deck
    //Re-populate cards[] with the standard 52 x numPacks cards.
    public void init(int numPacks)
    {
-      this.numPacks = numPacks;
+      if(numPacks > MAX_PACKS)
+         this.numPacks = 1;
+      else
+         this.numPacks = numPacks;
       topCard = (CARDS_IN_PACK * this.numPacks) - 1;
       for(int i = 0; i <= topCard; i++)
       {
@@ -600,10 +604,15 @@ class Deck
    //Take a card off the top of the deck and return it after deleting it from the cards array
    public Card dealCard()
    {
-      Card dealtCard = cards[topCard];
-      cards[topCard] = null;
-      topCard--;
-      return dealtCard;
+      if(getTopCard() != -1)
+      {
+         Card dealtCard = cards[topCard];
+         cards[topCard] = null;
+         topCard--;
+         return dealtCard;
+      }
+      else
+         return new Card('Z', Card.Suit.diamonds);
    }
    
    //Return the value of topCard
