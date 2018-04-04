@@ -78,11 +78,12 @@ public class Assign5Phase3
             numUnusedCardsPerPack, unusedCardsPerPack, 
             NUM_PLAYERS, NUM_CARDS_PER_HAND);
       
-      //CREATE THE BUTTON ACTION.
+      //Create the button action that simulates a turn.
       ActionListener buttonAction = new ActionListener() {
          @Override
          public void actionPerformed(ActionEvent e)
          {
+            //Find the index of the card/button component.
             int cardIndex = 0;
             for(int i = 0; i < highCardGame.getHand(HUMAN_PLAYER1).getNumCards(); i++)
             {
@@ -90,17 +91,37 @@ public class Assign5Phase3
                   cardIndex = i;
             }
             
+            //Play the card
             Card playerCard = highCardGame.playCard(HUMAN_PLAYER1, cardIndex);
             playedCardLabels[HUMAN_PLAYER1].setIcon(GUICard.getIcon(playerCard));
             playedCardLabels[HUMAN_PLAYER1].setVisible(true);
-            myCardTable.pnlHumanHand.remove(cardIndex);
             
+            //Draw from the deck.
+            if(highCardGame.takeCard(HUMAN_PLAYER1))
+            {
+               for(int i = cardIndex; i < NUM_CARDS_PER_HAND - 1; i++)
+               {
+                  humanLabels[i] = humanLabels[i + 1];
+                  playCardButtons[i].setIcon(humanLabels[i + 1]);
+               }
+               humanLabels[NUM_CARDS_PER_HAND - 1] = 
+                  (ImageIcon) GUICard.getIcon(highCardGame.getHand(1).inspectCard(NUM_CARDS_PER_HAND - 1));
+               playCardButtons[NUM_CARDS_PER_HAND - 1].setIcon(humanLabels[NUM_CARDS_PER_HAND - 1]);
+            }
+            else
+               myCardTable.pnlHumanHand.remove(cardIndex);
+                  
+            //Play the computer card.
             int index = comPlay(highCardGame.getHand(COMPUTER_PLAYER1), playerCard);
             Card computerCard = highCardGame.playCard(COMPUTER_PLAYER1,index);
             playedCardLabels[COMPUTER_PLAYER1].setIcon(GUICard.getIcon(computerCard));
             playedCardLabels[COMPUTER_PLAYER1].setVisible(true);
-            myCardTable.pnlComputerHand.remove(index);
             
+            //Take from the deck.
+            if(!highCardGame.takeCard(COMPUTER_PLAYER1))
+               myCardTable.pnlComputerHand.remove(index);
+            
+            //Update score.
             int score = scoreCards(playerCard,computerCard);
             updateScore(score);
             
@@ -180,6 +201,7 @@ public class Assign5Phase3
             cardChanged = true;
          }
       }
+    
       if(cardChanged == false)
       {
          for(int i = 0; i < compHand.getNumCards(); i++)
@@ -267,8 +289,8 @@ public class Assign5Phase3
          default: return new Card(value, Card.Suit.spades);
       }
    }//End GenerateRandomCard
-   
 }//End Main
+
 //class CardGameFramework  ----------------------------------------------------
 class CardGameFramework
 {
