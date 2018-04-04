@@ -20,7 +20,7 @@ public class Assign5Phase3
    static JButton[] playCardButtons = new JButton[NUM_CARDS_PER_HAND];
    static int[] playerScores = new int[NUM_PLAYERS];
    
-   public static void main(String[] args)
+   public static void main(String[] args) throws InterruptedException
    {   
       // establish main frame in which program will run
       CardTable myCardTable 
@@ -29,92 +29,26 @@ public class Assign5Phase3
       myCardTable.setLocationRelativeTo(null);
       myCardTable.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-      // show everything to the user
-      myCardTable.setVisible(true);
+      //CREATE THE PLAY AREA.
+      //Create a grid layout for the play and card areas.
+      GridLayout playAreaGrid = new GridLayout(2, NUM_PLAYERS);
+      myCardTable.pnlPlayArea.setLayout(playAreaGrid);
       
-      int numPacksPerDeck = 1;
-      int numJokersPerPack = 0;
-      int numUnusedCardsPerPack = 0;
-      Card[] unusedCardsPerPack = null;
-      
-      //variables for game
-      CardGameFramework highCardGame = new CardGameFramework( 
-            numPacksPerDeck, numJokersPerPack,  
-            numUnusedCardsPerPack, unusedCardsPerPack, 
-            NUM_PLAYERS, NUM_CARDS_PER_HAND);
-      
-      highCardGame.newGame();
-      highCardGame.deal();
-      // CREATE LABELS ----------------------------------------------------
-      //Computer and Player Hand.
-      for(int i = 0; i < NUM_CARDS_PER_HAND; i++) 
-      {
-         computerLabels[i] = new JLabel(GUICard.getBackCardIcon());
-         humanLabels[i] = (ImageIcon) GUICard.getIcon(highCardGame.getHand(1).inspectCard(i));
-         playCardButtons[i] = new JButton(humanLabels[i]);
-         playCardButtons[i].addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-               int cardIndex = 0;
-               for(int i = 0; i < highCardGame.getHand(HUMAN_PLAYER1).getNumCards(); i++)
-               {
-                  if(e.getSource() == myCardTable.pnlHumanHand.getComponent(i))
-                     cardIndex = i;
-               }
-               
-               Card playerCard = highCardGame.playCard(HUMAN_PLAYER1, cardIndex);
-               playedCardLabels[HUMAN_PLAYER1].setIcon(GUICard.getIcon(playerCard));
-               playedCardLabels[HUMAN_PLAYER1].setVisible(true);
-               myCardTable.pnlHumanHand.remove(cardIndex);
-               
-               int index = comPlay(highCardGame.getHand(COMPUTER_PLAYER1), playerCard);
-               Card computerCard = highCardGame.playCard(COMPUTER_PLAYER1,index);
-               playedCardLabels[COMPUTER_PLAYER1].setIcon(GUICard.getIcon(computerCard));
-               playedCardLabels[COMPUTER_PLAYER1].setVisible(true);
-               myCardTable.pnlComputerHand.remove(index);
-               
-               int score = scoreCards(playerCard,computerCard);
-               updateScore(score);
-               
-
-               myCardTable.revalidate();
-               myCardTable.repaint();
-            }
-         });
-      }
+      GridLayout cardAreaGrid = new GridLayout(1,NUM_CARDS_PER_HAND);
+      myCardTable.pnlComputerHand.setLayout(cardAreaGrid);
+      myCardTable.pnlHumanHand.setLayout(cardAreaGrid);
       
       //Play Area.
       for(int i = 0; i < NUM_PLAYERS; i++)
       {
-         playedCardLabels[i] = new JLabel(GUICard.getIcon(generateRandomCard()));
+         playedCardLabels[i] = new JLabel();
          if(i == 0)
-            playLabelText[i] = new JLabel("Computer's Score: " + playerScores[0]);
+            playLabelText[i] = new JLabel("Computer's Score: 0");
          else if(i == 1)
-            playLabelText[i] = new JLabel("Your Score: " + playerScores[1]);
+            playLabelText[i] = new JLabel("Your Score: 0");
          else
             playLabelText[i] = new JLabel("Player " + i);
       }
-      
-      // ADD LABELS TO PANELS -----------------------------------------
-      //Computer and Player Hand.
-      for(JLabel label : computerLabels)
-      {
-         label.setVisible(true);
-         myCardTable.pnlComputerHand.add(label);
-      }
-      
-      for(JButton buttons : playCardButtons)
-      {
-         buttons.setVisible(true);
-         GridLayout cardAreaGrid = new GridLayout(1,NUM_CARDS_PER_HAND);
-         myCardTable.pnlHumanHand.setLayout(cardAreaGrid);
-         myCardTable.pnlHumanHand.add(buttons);
-      }
-      
-      //Create a grid layout for the play area
-      GridLayout playAreaGrid = new GridLayout(2, NUM_PLAYERS);
-      myCardTable.pnlPlayArea.setLayout(playAreaGrid);
       
       //Add icons first...
       for(int i = 0; i < NUM_PLAYERS; i++)
@@ -131,34 +65,100 @@ public class Assign5Phase3
          playLabelText[i].setHorizontalAlignment(JLabel.CENTER);
          myCardTable.pnlPlayArea.add(playLabelText[i]);
       }
-
-      // show everything to the user
-      myCardTable.setVisible(true);
+      //END PLAY AREA
       
-      //Game loop
-      //Clicking yes will result in the dialog box popping up again.
-      //Click no to close the program.
+      //CREATE THE GAME
+      int numPacksPerDeck = 1;
+      int numJokersPerPack = 0;
+      int numUnusedCardsPerPack = 0;
+      Card[] unusedCardsPerPack = null;
+      
+      CardGameFramework highCardGame = new CardGameFramework( 
+            numPacksPerDeck, numJokersPerPack,  
+            numUnusedCardsPerPack, unusedCardsPerPack, 
+            NUM_PLAYERS, NUM_CARDS_PER_HAND);
+      
+      //CREATE THE BUTTON ACTION.
+      ActionListener buttonAction = new ActionListener() {
+         @Override
+         public void actionPerformed(ActionEvent e)
+         {
+            int cardIndex = 0;
+            for(int i = 0; i < highCardGame.getHand(HUMAN_PLAYER1).getNumCards(); i++)
+            {
+               if(e.getSource() == myCardTable.pnlHumanHand.getComponent(i))
+                  cardIndex = i;
+            }
+            
+            Card playerCard = highCardGame.playCard(HUMAN_PLAYER1, cardIndex);
+            playedCardLabels[HUMAN_PLAYER1].setIcon(GUICard.getIcon(playerCard));
+            playedCardLabels[HUMAN_PLAYER1].setVisible(true);
+            myCardTable.pnlHumanHand.remove(cardIndex);
+            
+            int index = comPlay(highCardGame.getHand(COMPUTER_PLAYER1), playerCard);
+            Card computerCard = highCardGame.playCard(COMPUTER_PLAYER1,index);
+            playedCardLabels[COMPUTER_PLAYER1].setIcon(GUICard.getIcon(computerCard));
+            playedCardLabels[COMPUTER_PLAYER1].setVisible(true);
+            myCardTable.pnlComputerHand.remove(index);
+            
+            int score = scoreCards(playerCard,computerCard);
+            updateScore(score);
+            
+            myCardTable.revalidate();
+            myCardTable.repaint();
+         }
+      };
+  
+      //START THE GAME
       int result = JOptionPane.YES_OPTION;
       while(result == JOptionPane.YES_OPTION)
       {
+         highCardGame.newGame();
+         highCardGame.deal();
          
-         while(highCardGame.getHand(COMPUTER_PLAYER1).getNumCards() > 0 || highCardGame.getHand(HUMAN_PLAYER1).getNumCards() > 0)
+         //Create the Computer and Player Hand.
+         for(int i = 0; i < NUM_CARDS_PER_HAND; i++) 
          {
+            computerLabels[i] = new JLabel(GUICard.getBackCardIcon());
+            computerLabels[i].setVisible(true);
+            myCardTable.pnlComputerHand.add(computerLabels[i]);
+            
+            humanLabels[i] = (ImageIcon) GUICard.getIcon(highCardGame.getHand(1).inspectCard(i));
+            playCardButtons[i] = new JButton(humanLabels[i]);
+            playCardButtons[i].addActionListener(buttonAction);
+            playCardButtons[i].setVisible(true);
+            myCardTable.pnlHumanHand.add(playCardButtons[i]);
          }
-
+         
+         //Show everything to the user
+         myCardTable.setVisible(true);
+         myCardTable.revalidate();
+         myCardTable.repaint();
+         
+         //Run the game
+         while(highCardGame.getHand(COMPUTER_PLAYER1).getNumCards() > 0 || 
+               highCardGame.getHand(HUMAN_PLAYER1).getNumCards() > 0)
+            Thread.sleep(100);
+         
+         //End the game
          String endMessage;
          if(playerScores[COMPUTER_PLAYER1] > playerScores[HUMAN_PLAYER1])
             endMessage = "Computer wins!\nYour score was: " + playerScores[HUMAN_PLAYER1] + "\nComputer's Score was: " + playerScores[COMPUTER_PLAYER1];
-         else if(playerScores[COMPUTER_PLAYER1] < playerScores[HUMAN_PLAYER1])
+         else if(playerScores[COMPUTER_PLAYER1] < playerScores[1])
             endMessage = "You win!\nYour score was: " + playerScores[HUMAN_PLAYER1] + "\nComputer's Score was: " + playerScores[COMPUTER_PLAYER1];
          else
             endMessage = "Tie!\nYour score was: " + playerScores[HUMAN_PLAYER1] + "\nComputer's Score was: " + playerScores[COMPUTER_PLAYER1];
          endMessage = endMessage + "\nDo you want to play again?";
+         
+         //Replay the game?
          result = JOptionPane.showConfirmDialog(null, endMessage, "Game Over", JOptionPane.YES_NO_OPTION);
+         
+         playerScores[COMPUTER_PLAYER1] = 0;
+         playerScores[HUMAN_PLAYER1] = 0;
+         playLabelText[COMPUTER_PLAYER1].setText("Computer's Score: 0");
+         playLabelText[HUMAN_PLAYER1].setText("Computer's Score: 0");
       }
-      if(result == JOptionPane.NO_OPTION)
-         System.exit(0);
-      
+      System.exit(0);
    }//end Main
    
    protected static int comPlay(Hand comHand, Card playedCard)
@@ -198,21 +198,10 @@ public class Assign5Phase3
    
    protected static void updateScore(int score)
    {
-      if(score == -1)
-      {
-         playerScores[COMPUTER_PLAYER1] +=2;
-         playLabelText[COMPUTER_PLAYER1].setText("Computer's Score: " + playerScores[COMPUTER_PLAYER1]);
-      }
-      else if(score == 1) 
-      {
-         playerScores[HUMAN_PLAYER1] +=2;
-         playLabelText[HUMAN_PLAYER1].setText("Player's Score: " + playerScores[HUMAN_PLAYER1]);
-      }
-      else
-      {
+      if(score == -1) 
          playLabelText[COMPUTER_PLAYER1].setText("Computer's Score: " + ++playerScores[COMPUTER_PLAYER1]);
+      else
          playLabelText[HUMAN_PLAYER1].setText("Player's Score: " + ++playerScores[HUMAN_PLAYER1]);
-      }
    }
 
    protected static int scoreCards(Card playerCard, Card computerCard)
@@ -269,7 +258,6 @@ public class Assign5Phase3
    }//End GenerateRandomCard
    
 }//End Main
-
 //class CardGameFramework  ----------------------------------------------------
 class CardGameFramework
 {
