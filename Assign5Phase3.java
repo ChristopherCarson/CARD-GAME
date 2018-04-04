@@ -182,6 +182,7 @@ public class Assign5Phase3
       System.exit(0);
    }//end Main
    
+   //Allows the computer to play a card based on what you played.
    protected static int comPlay(Hand comHand, Card playedCard)
    {
       int returnIndex = 0;
@@ -190,6 +191,9 @@ public class Assign5Phase3
       int checkCardRank = Card.getCardValueRank(checkCard);
       boolean cardChanged = false;
       
+      //Go through and find a card that can beat the card that was played.
+      //If a card is smaller than the one chosen but beats the played card, play that one instead.
+      //Update the card changed flag if a card was found
       for(int i = 0; i < compHand.getNumCards(); i++)
       {
          compHand.inspectCard(i);
@@ -201,7 +205,8 @@ public class Assign5Phase3
             cardChanged = true;
          }
       }
-    
+      
+      //If there is no card in hand has a higher rank the played card, play the lowest ranked card in hand
       if(cardChanged == false)
       {
          for(int i = 0; i < compHand.getNumCards(); i++)
@@ -218,14 +223,29 @@ public class Assign5Phase3
       return returnIndex;
    }//end comPlay
    
+   //Updates the score based on the result of the scoreCards function below.
+   //Gives the winner 2 points or each player 1 point in the result of a tie.
    protected static void updateScore(int score)
    {
-      if(score == -1) 
+      if(score == -1) //computer wins
+      {
+         playerScores[COMPUTER_PLAYER1] += 2;
+         playLabelText[COMPUTER_PLAYER1].setText("Computer's Score: " + playerScores[COMPUTER_PLAYER1]);
+      }
+      else if(score == 1) //player wins
+      {
+         playerScores[HUMAN_PLAYER1] +=2;
+         playLabelText[HUMAN_PLAYER1].setText("Player's Score: " + playerScores[HUMAN_PLAYER1]);
+      }
+      else if (score == 0) //tie
+      {
          playLabelText[COMPUTER_PLAYER1].setText("Computer's Score: " + ++playerScores[COMPUTER_PLAYER1]);
-      else
          playLabelText[HUMAN_PLAYER1].setText("Player's Score: " + ++playerScores[HUMAN_PLAYER1]);
+      }
    }
 
+   //Scores the cards based on their rank values
+   //Returns a 0 if they are the same rank
    protected static int scoreCards(Card playerCard, Card computerCard)
    {
       if(Card.getCardValueRank(playerCard) > Card.getCardValueRank(computerCard))
@@ -234,50 +254,7 @@ public class Assign5Phase3
          return -1;
       return 0;
    }
-
-   //Returns a randomly selected card.
-   static private Card generateRandomCard()
-   {
-      Random rand = new Random();
-      int randInt = rand.nextInt(14);
-      char value;
-      
-      //Get the random value.
-      switch(randInt)
-      {
-         case 0: 
-            value = 'A';
-            break;
-         case 9: 
-            value = 'T';
-            break;
-         case 10: 
-            value = 'J';
-            break;
-         case 11: 
-            value = 'Q';
-            break;
-         case 12: 
-            value = 'K';
-            break;
-         case 13: 
-            value = 'X';
-            break;
-         default: 
-            value = (char)(randInt + 49); //+49 to account for ASCII code and +1 offset.
-            break;
-      }
-      
-      //Get the random suit.
-      randInt = rand.nextInt(3);
-      switch(randInt)
-      {
-         case 0: return new Card(value, Card.Suit.clubs);
-         case 1: return new Card(value, Card.Suit.diamonds);
-         case 2: return new Card(value, Card.Suit.hearts);
-         default: return new Card(value, Card.Suit.spades);
-      }
-   }//End GenerateRandomCard
+   
 }//End Main
 
 //class CardGameFramework  ----------------------------------------------------
