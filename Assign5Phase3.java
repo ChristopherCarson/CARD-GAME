@@ -410,8 +410,7 @@ class CardGameFramework
        return hand[playerIndex].playCard(cardIndex);
     
     }
-   
-   
+  
     boolean takeCard(int playerIndex)
     {
        // returns false if either argument is bad
