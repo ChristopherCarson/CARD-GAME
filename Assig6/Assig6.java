@@ -83,10 +83,7 @@ public class Assig6
             numUnusedCardsPerPack, unusedCardsPerPack, 
             NUM_PLAYERS, NUM_CARDS_PER_HAND);
       
-
-      GameController buttonAction = new GameController();
-      
-      
+      GameController buttonAction = new GameController(highCardGame, myCardTable);  
   
       //START THE GAME
       int result = JOptionPane.YES_OPTION;
