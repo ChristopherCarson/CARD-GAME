@@ -1,70 +1,83 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
+public class GameController implements ActionListener {
 
-public class GameController implements ActionListener{ 
-   
-   GameModel.CardGameFramework highCardGame;
-   GameView.CardTable myCardTable;
-   
-   public GameController(GameModel.CardGameFramework a, GameView.CardTable b ){
-      
-   highCardGame = a;
-   myCardTable = b;
-   
+   GameModel gameModel;
+   GameView gameView;
+   String endMessage;
+   int numCardsPerHand = GameModel.numCardsPerHand;
+   int result = JOptionPane.YES_OPTION;
+   int HUMAN_PLAYER1 = GameModel.HUMAN_PLAYER1;
+   int COMPUTER_PLAYER1 = GameModel.COMPUTER_PLAYER1;
+
+   public GameController(GameModel model, GameView view) {
+
+      gameModel = model;
+      gameView = view;
+
    }
 
-   public void actionPerformed(ActionEvent e) { 
-      //code that reacts to the action... 
+   public void actionPerformed(ActionEvent e) {
+      // code that reacts to the action...
 
-      
-            //Find the index of the card/button component.
-            int cardIndex = 0;
-            for(int i = 0; i < highCardGame.getHand(Assig6.HUMAN_PLAYER1).getNumCards(); i++)
-            {
-               if(e.getSource() == myCardTable.pnlHumanHand.getComponent(i))
-                  cardIndex = i;
-            }
-            
-            //Play the card
-            GameModel.Card playerCard = highCardGame.playCard(Assig6.HUMAN_PLAYER1, cardIndex);
-            Assig6.playedCardLabels[Assig6.HUMAN_PLAYER1].setIcon(GameModel.GUICard.getIcon(playerCard));
-            Assig6.playedCardLabels[Assig6.HUMAN_PLAYER1].setVisible(true);
-            
-            //Draw from the deck.
-            if(highCardGame.takeCard(Assig6.HUMAN_PLAYER1))
-            {
-               for(int i = cardIndex; i < Assig6.NUM_CARDS_PER_HAND - 1; i++)
-               {
-                  Assig6.humanLabels[i] = Assig6.humanLabels[i + 1];
-                  Assig6.playCardButtons[i].setIcon(Assig6.humanLabels[i + 1]);
-               }
-               Assig6.humanLabels[Assig6.NUM_CARDS_PER_HAND - 1] = 
-                  (ImageIcon) GameModel.GUICard.getIcon(highCardGame.getHand(1).inspectCard(Assig6.NUM_CARDS_PER_HAND - 1));
-               Assig6.playCardButtons[Assig6.NUM_CARDS_PER_HAND - 1].setIcon(Assig6.humanLabels[Assig6.NUM_CARDS_PER_HAND - 1]);
-            }
-            else
-               myCardTable.pnlHumanHand.remove(cardIndex);
-                  
-            //Play the computer card.
-            int index = GameModel.comPlay(highCardGame.getHand(Assig6.COMPUTER_PLAYER1), playerCard);
-            GameModel.Card computerCard = highCardGame.playCard(Assig6.COMPUTER_PLAYER1,index);
-            Assig6.playedCardLabels[Assig6.COMPUTER_PLAYER1].setIcon(GameModel.GUICard.getIcon(computerCard));
-            Assig6.playedCardLabels[Assig6.COMPUTER_PLAYER1].setVisible(true);
-            
-            //Take from the deck.
-            if(!highCardGame.takeCard(Assig6.COMPUTER_PLAYER1))
-               myCardTable.pnlComputerHand.remove(index);
-            
-            //Update score.
-            int score = GameModel.scoreCards(playerCard,computerCard);
-            GameModel.updateScore(score);
-            
-            myCardTable.revalidate();
-            myCardTable.repaint();
-      
-  }
+      // Find the index of the card/button component.
+      int cardIndex = 0;
+      for (int i = 0; i < gameModel.getHand(HUMAN_PLAYER1).getNumCards(); i++) {
+         if (e.getSource() == GameView.pnlHumanHand.getComponent(i))
+            cardIndex = i;
+      }
 
+      gameModel.playCards(cardIndex);
+      gameView.revalidate();
+      gameView.repaint();
+
+   }
+
+   public void createHands() {
+
+      for (int i = 0; i < numCardsPerHand; i++) {
+         GameView.computerLabels[i] = new JLabel(GameModel.GUICard.getBackCardIcon());
+         GameView.computerLabels[i].setVisible(true);
+
+         GameView.pnlComputerHand.add(GameView.computerLabels[i]);
+         GameView.humanLabels[i] = (ImageIcon) GameModel.GUICard.getIcon(gameModel.getHand(1).inspectCard(i));
+         GameModel.playCardButtons[i] = new JButton(GameView.humanLabels[i]);
+         GameModel.playCardButtons[i].addActionListener(this);
+         GameModel.playCardButtons[i].setVisible(true);
+         GameView.pnlHumanHand.add(GameModel.playCardButtons[i]);
+      }
+   }
+
+   public void StartGame() {
+      while (result == JOptionPane.YES_OPTION) {
+         gameModel.newGame();
+         gameModel.deal();
+         createHands();
+
+         // Show everything to the user
+         gameView.setVisible(true);
+         gameView.revalidate();
+         gameView.repaint();
+
+         // Run the game
+         while (gameModel.getHand(COMPUTER_PLAYER1).getNumCards() > 0
+               || gameModel.getHand(HUMAN_PLAYER1).getNumCards() > 0)
+            try {
+               Thread.sleep(100);
+            } catch (InterruptedException ie) {
+            }
+
+         endMessage = gameView.EndGame();
+         // Replay the game?
+         result = JOptionPane.showConfirmDialog(null, endMessage, "Game Over", JOptionPane.YES_NO_OPTION);
+         GameModel.playerScores[COMPUTER_PLAYER1] = 0;
+         GameModel.playerScores[HUMAN_PLAYER1] = 0;
+      }
+   }
 
 }
