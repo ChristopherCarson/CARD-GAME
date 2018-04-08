@@ -1,87 +1,123 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.ImageIcon;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 
-public class GameController implements ActionListener
+//Controller class for the card game.
+class Controller implements ActionListener, MouseListener
 {
-   GameModel gameModel;
-   GameView gameView;
-   String endMessage;
-   int numCardsPerHand = GameModel.numCardsPerHand;
-   int result = JOptionPane.YES_OPTION;
-   int HUMAN_PLAYER1 = GameModel.HUMAN_PLAYER1;
-   int COMPUTER_PLAYER1 = GameModel.COMPUTER_PLAYER1;
+   static final int HUMAN_PLAYER    = 1;
+   static final int COMPUTER_PLAYER = 0;
+   private Model    cardGameModel;
+   private View     cardGameView;
 
-   public GameController(GameModel model, GameView view)
+   // Constructor sets the model and view objects.
+   public Controller(Model model, View view)
    {
-      gameModel = model;
-      gameView = view;
+      cardGameModel = model;
+      cardGameView = view;
    }
 
+   // Readies the model and view objects.
+   public void init()
+   {
+      cardGameModel.startGame();
+      cardGameView.updateHand(cardGameModel.getHandIcons(COMPUTER_PLAYER), COMPUTER_PLAYER);
+      cardGameView.updateHand(cardGameModel.getHandIcons(HUMAN_PLAYER), HUMAN_PLAYER);
+      cardGameView.updateScore(0, HUMAN_PLAYER);
+      cardGameView.updateScore(0, COMPUTER_PLAYER);
+      cardGameView.updateStack(cardGameModel.getStackIcons());
+      cardGameView.setVisible(true);
+   }
+
+   // Actions performed on click of the button.
+   @Override
    public void actionPerformed(ActionEvent e)
    {
-      // code that reacts to the action...
-
-      // Find the index of the card/button component.
-      int cardIndex = 0;
-      for (int i = 0; i < gameModel.getHand(HUMAN_PLAYER1).getNumCards(); i++)
+      // For cards in the player's hand.
+      if (e.getActionCommand() == "Human Player Card" && cardGameModel.getPlayerTurn() == HUMAN_PLAYER)
       {
-         if (e.getSource() == GameView.pnlHumanHand.getComponent(i))
-            cardIndex = i;
+         // Check to make sure the button isn't already selected.
+         if (cardGameView.getPlayerButtonIndex((JButton) e.getSource()) != cardGameModel.getSelected())
+            cardGameModel.setSelected(cardGameView.getPlayerButtonIndex((JButton) e.getSource()));
+         else
+            // Unselect if already selected.
+            cardGameModel.setSelected(-1);
+
+         // Update view with selected button.
+         cardGameView.setSelectedButton(cardGameModel.getSelected());
       }
-      gameModel.playCards(cardIndex);
-      gameView.revalidate();
-      gameView.repaint();
+
+      if (e.getActionCommand() == "I Cannot Play" && cardGameModel.getPlayerTurn() == HUMAN_PLAYER)
+      {
+         // End the players turn.
+         cardGameModel.endTurn(false); // False since no move was made.
+         if (cardGameModel.getPlayerTurn() == COMPUTER_PLAYER)
+            computerTurn();
+      }
+
+      if (cardGameModel.isGameOver())
+      {
+         // If the player chooses to play again rerun the init method.
+         if (cardGameView.loadEndGamePrompt() == 0)
+            init();
+         else
+            System.exit(0);
+      }
    }
 
-   public void createHands()
+   // Mouse clicks events matter when player clicks on one of the cards on a stack.
+   @Override
+   public void mouseClicked(MouseEvent arg0)
    {
-      for (int i = 0; i < numCardsPerHand; i++)
+      if (arg0.getComponent().getName() == "Play Area Card Stack" && cardGameModel.getSelected() >= 0
+            && cardGameModel.getPlayerTurn() == HUMAN_PLAYER)
       {
-         GameView.computerLabels[i] = new JLabel(GameModel.GUICard.getBackCardIcon());
-         GameView.computerLabels[i].setVisible(true);
+         // If the player is making a valid move.
+         if (cardGameModel.addCardToStack(cardGameView.getStackIndex((JLabel) arg0.getComponent())))
+         {
+            cardGameView.updateStack(cardGameModel.getStackIcons());
+            cardGameView.updateHand(cardGameModel.getHandIcons(HUMAN_PLAYER), HUMAN_PLAYER);
+            cardGameModel.endTurn(true); // True since a move was made.
+            cardGameView.updateScore(cardGameModel.getPlayerScore(HUMAN_PLAYER), HUMAN_PLAYER);
+         }
+         cardGameView.setSelectedButton(cardGameModel.getSelected());
 
-         GameView.pnlComputerHand.add(GameView.computerLabels[i]);
-         GameView.humanLabels[i] = (ImageIcon) GameModel.GUICard.getIcon(gameModel.getHand(1).inspectCard(i));
-         GameModel.playCardButtons[i] = new JButton(GameView.humanLabels[i]);
-         GameModel.playCardButtons[i].addActionListener(this);
-         GameModel.playCardButtons[i].setVisible(true);
-         GameView.pnlHumanHand.add(GameModel.playCardButtons[i]);
+         if (cardGameModel.getPlayerTurn() == COMPUTER_PLAYER && !cardGameModel.isGameOver())
+            computerTurn();
+      }
+
+      if (cardGameModel.isGameOver())
+      {
+         // If the player chooses to play again rerun the init method.
+         if (cardGameView.loadEndGamePrompt() == 0)
+            init();
+         else
+            System.exit(0);
       }
    }
 
-   public void StartGame()
+   // Simulates a computer turn.
+   private void computerTurn()
    {
-      while (result == JOptionPane.YES_OPTION)
-      {
-         gameModel.newGame();
-         gameModel.deal();
-         createHands();
-
-         // Show everything to the user
-         gameView.setVisible(true);
-         gameView.revalidate();
-         gameView.repaint();
-
-         // Run the game
-         while (gameModel.getHand(COMPUTER_PLAYER1).getNumCards() > 0
-               || gameModel.getHand(HUMAN_PLAYER1).getNumCards() > 0)
-            try
-            {
-               Thread.sleep(100);
-            } catch (InterruptedException ie)
-            {
-            }
-
-         endMessage = gameView.EndGame();
-         // Replay the game?
-         result = JOptionPane.showConfirmDialog(null, endMessage, "Game Over", JOptionPane.YES_NO_OPTION);
-         GameModel.playerScores[COMPUTER_PLAYER1] = 0;
-         GameModel.playerScores[HUMAN_PLAYER1] = 0;
-      }
+      cardGameModel.startComputerTurn();
+      cardGameView.updateStack(cardGameModel.getStackIcons());
+      cardGameView.updateHand(cardGameModel.getHandIcons(COMPUTER_PLAYER), COMPUTER_PLAYER);
+      cardGameView.updateScore(cardGameModel.getPlayerScore(COMPUTER_PLAYER), COMPUTER_PLAYER);
    }
 
+   @Override
+   public void mouseEntered(MouseEvent e) {}
+
+   @Override
+   public void mouseExited(MouseEvent e) {}
+
+   @Override
+   public void mousePressed(MouseEvent e){}
+
+   @Override
+   public void mouseReleased(MouseEvent e) {}
 }
