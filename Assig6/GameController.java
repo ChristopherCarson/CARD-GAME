@@ -5,8 +5,8 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
-public class GameController implements ActionListener {
-
+public class GameController implements ActionListener
+{
    GameModel gameModel;
    GameView gameView;
    String endMessage;
@@ -15,32 +15,32 @@ public class GameController implements ActionListener {
    int HUMAN_PLAYER1 = GameModel.HUMAN_PLAYER1;
    int COMPUTER_PLAYER1 = GameModel.COMPUTER_PLAYER1;
 
-   public GameController(GameModel model, GameView view) {
-
+   public GameController(GameModel model, GameView view)
+   {
       gameModel = model;
       gameView = view;
-
    }
 
-   public void actionPerformed(ActionEvent e) {
+   public void actionPerformed(ActionEvent e)
+   {
       // code that reacts to the action...
 
       // Find the index of the card/button component.
       int cardIndex = 0;
-      for (int i = 0; i < gameModel.getHand(HUMAN_PLAYER1).getNumCards(); i++) {
+      for (int i = 0; i < gameModel.getHand(HUMAN_PLAYER1).getNumCards(); i++)
+      {
          if (e.getSource() == GameView.pnlHumanHand.getComponent(i))
             cardIndex = i;
       }
-
       gameModel.playCards(cardIndex);
       gameView.revalidate();
       gameView.repaint();
-
    }
 
-   public void createHands() {
-
-      for (int i = 0; i < numCardsPerHand; i++) {
+   public void createHands()
+   {
+      for (int i = 0; i < numCardsPerHand; i++)
+      {
          GameView.computerLabels[i] = new JLabel(GameModel.GUICard.getBackCardIcon());
          GameView.computerLabels[i].setVisible(true);
 
@@ -53,8 +53,10 @@ public class GameController implements ActionListener {
       }
    }
 
-   public void StartGame() {
-      while (result == JOptionPane.YES_OPTION) {
+   public void StartGame()
+   {
+      while (result == JOptionPane.YES_OPTION)
+      {
          gameModel.newGame();
          gameModel.deal();
          createHands();
@@ -67,9 +69,11 @@ public class GameController implements ActionListener {
          // Run the game
          while (gameModel.getHand(COMPUTER_PLAYER1).getNumCards() > 0
                || gameModel.getHand(HUMAN_PLAYER1).getNumCards() > 0)
-            try {
+            try
+            {
                Thread.sleep(100);
-            } catch (InterruptedException ie) {
+            } catch (InterruptedException ie)
+            {
             }
 
          endMessage = gameView.EndGame();
