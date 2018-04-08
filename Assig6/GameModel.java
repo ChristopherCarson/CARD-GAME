@@ -1,3 +1,5 @@
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Random;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -24,6 +26,8 @@ public class GameModel {
                                       // in the game. e.g. pinochle does not
                                       // use cards 2-8 of any suit
    private static final int MAX_PLAYERS = 50;
+   
+   private final SimpleDateFormat date = new SimpleDateFormat("mm:ss"); //format to assist with the timer
 
    public GameModel(int numPacks, int numJokersPerPack, int numUnusedCardsPerPack, Card[] unusedCardsPerPack,
          int numPlayers, int numCardsPerHand) {
@@ -707,5 +711,33 @@ public class GameModel {
          }
       }
    }// End Deck Class
-
+   
+   //class for clock in game
+   static class Clock extends Thread
+   {
+      public void run()
+      {
+         long clock = 0;
+         while(true)
+         {
+            clock++;
+            Date elapsed = new Date(clock * 1000);
+            //add the date to a label change test to whatever the label name is
+            //test.setText(date.format(elapsed));
+            doNothing(1000);
+         }
+      }
+      public void doNothing(int milliseconds)
+      {
+         try
+         {
+            Thread.sleep(milliseconds); 
+         }
+         catch(InterruptedException e)
+         {
+            System.out.println("Unexpected interrupt.");
+            System.exit(0);
+         }
+      }
+   }
 }// End GameModel Class
