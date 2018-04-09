@@ -24,7 +24,6 @@ class View
    private JLabel[] addToStackLabel = new JLabel[NUM_CARD_STACKS];
    private JButton cantPlayButton;
    static JButton startTimerButton;
-   private JButton stopTimerButton;
    private JLabel[] computerHandLabels = new JLabel[NUM_CARDS_PER_HAND];
    private JButton[] playerHandButtons = new JButton[NUM_CARDS_PER_HAND];
    private JLabel[] playerScoreLabels = new JLabel[NUM_PLAYERS];
@@ -35,14 +34,15 @@ class View
 
    public void startTimer()
    {
+      if (t.isAlive()) {
+         t = new Thread(new View.Timer());
+         clockRun = false;
+         
+      }else {
+
       t.start();
       clockRun = true;
-   }
-
-   public void stopTimer()
-   {
-      t = new Thread(new View.Timer());
-      clockRun = false;
+      }
    }
 
    // Constructor sets up the table.
@@ -69,16 +69,11 @@ class View
       myCardTable.pnlPlayArea.add(cantPlayButton);
 
       ////////////////////////////
-      startTimerButton = new JButton("Start Timer");
+      startTimerButton = new JButton("Click to Start Timer");
       startTimerButton.setActionCommand("Start Timer");//////
       startTimerButton.setVisible(true);
       myCardTable.pnlPlayArea.add(startTimerButton);
 
-      ////////////////////////////
-      stopTimerButton = new JButton("Stop Timer");
-      stopTimerButton.setActionCommand("Stop Timer");//////
-      stopTimerButton.setVisible(true);
-      myCardTable.pnlPlayArea.add(stopTimerButton);
 
       // Player Hands
       for (int i = 0; i < NUM_CARDS_PER_HAND; i++)
@@ -110,7 +105,6 @@ class View
          addToStackLabel[i].addMouseListener(controller);
       cantPlayButton.addActionListener(controller);
       startTimerButton.addActionListener(controller);
-      stopTimerButton.addActionListener(controller);
 
       for (int i = 0; i < NUM_CARDS_PER_HAND; i++)
          playerHandButtons[i].addActionListener(controller);
@@ -262,9 +256,10 @@ class View
             // test.setText(date.format(elapsed));
             doNothing(1000);
             // System.out.println(clockCounter);
-            startTimerButton.setText("Timer: " + Long.toString(clockCounter));
+            startTimerButton.setText("Click to Stop Timer: " + Long.toString(clockCounter));
 
          }
+         startTimerButton.setText("Click to re-start Timer: " + Long.toString(clockCounter));
       }
 
       public void doNothing(int milliseconds)
