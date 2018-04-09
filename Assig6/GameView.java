@@ -41,6 +41,7 @@ class View
 
    public void stopTimer()
    {
+      t = new Thread(new View.Timer());
       clockRun = false;
    }
 
@@ -251,6 +252,7 @@ class View
 
       public void run()
       {
+
          long clockCounter = 0;
          while (View.clockRun == true)
          {
@@ -261,6 +263,7 @@ class View
             doNothing(1000);
             // System.out.println(clockCounter);
             startTimerButton.setText("Timer: " + Long.toString(clockCounter));
+
          }
       }
 

@@ -9,10 +9,10 @@ import javax.swing.JLabel;
 //Controller class for the card game.
 class Controller implements ActionListener, MouseListener
 {
-   static final int HUMAN_PLAYER    = 1;
+   static final int HUMAN_PLAYER = 1;
    static final int COMPUTER_PLAYER = 0;
-   private Model    cardGameModel;
-   private View     cardGameView;
+   private Model cardGameModel;
+   private View cardGameView;
 
    // Constructor sets the model and view objects.
    public Controller(Model model, View view)
@@ -58,12 +58,12 @@ class Controller implements ActionListener, MouseListener
          if (cardGameModel.getPlayerTurn() == COMPUTER_PLAYER)
             computerTurn();
       }
-      
+
       if (e.getActionCommand() == "Start Timer")
       {
          cardGameView.startTimer();
       }
-      
+
       if (e.getActionCommand() == "Stop Timer")
       {
          cardGameView.stopTimer();
@@ -120,14 +120,22 @@ class Controller implements ActionListener, MouseListener
    }
 
    @Override
-   public void mouseEntered(MouseEvent e) {}
+   public void mouseEntered(MouseEvent e)
+   {
+   }
 
    @Override
-   public void mouseExited(MouseEvent e) {}
+   public void mouseExited(MouseEvent e)
+   {
+   }
 
    @Override
-   public void mousePressed(MouseEvent e){}
+   public void mousePressed(MouseEvent e)
+   {
+   }
 
    @Override
-   public void mouseReleased(MouseEvent e) {}
+   public void mouseReleased(MouseEvent e)
+   {
+   }
 }
