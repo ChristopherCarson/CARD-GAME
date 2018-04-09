@@ -260,7 +260,8 @@ class View
             startTimerButton.setText("Click to Stop Timer: " + Long.toString(clockCounter));
 
          }
-         startTimerButton.setText("Click to re-start Timer: " + Long.toString(clockCounter));
+         clockCounter--;
+         startTimerButton.setText("Click to Re-Start Timer: " + Long.toString(clockCounter));
       }
 
       public void doNothing(int milliseconds)
