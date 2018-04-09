@@ -34,14 +34,16 @@ class View
 
    public void startTimer()
    {
-      if (t.isAlive()) {
+      if (t.isAlive())
+      {
          t = new Thread(new View.Timer());
          clockRun = false;
-         
-      }else {
 
-      t.start();
-      clockRun = true;
+      } else
+      {
+
+         t.start();
+         clockRun = true;
       }
    }
 
@@ -73,7 +75,6 @@ class View
       startTimerButton.setActionCommand("Start Timer");//////
       startTimerButton.setVisible(true);
       myCardTable.pnlPlayArea.add(startTimerButton);
-
 
       // Player Hands
       for (int i = 0; i < NUM_CARDS_PER_HAND; i++)

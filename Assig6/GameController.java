@@ -64,7 +64,6 @@ class Controller implements ActionListener, MouseListener
          cardGameView.startTimer();
       }
 
-
       if (cardGameModel.isGameOver())
       {
          // If the player chooses to play again rerun the init method.
