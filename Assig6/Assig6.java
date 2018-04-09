@@ -10,6 +10,7 @@ public class Assig6
       View cardGameView = new View();
       Controller cardGameController = new Controller(cardGameModel, cardGameView);
       cardGameView.addController(cardGameController);
+
       cardGameController.init();
    }//End Main
 }// end Assig6

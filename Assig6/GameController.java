@@ -58,6 +58,16 @@ class Controller implements ActionListener, MouseListener
          if (cardGameModel.getPlayerTurn() == COMPUTER_PLAYER)
             computerTurn();
       }
+      
+      if (e.getActionCommand() == "Start Timer")
+      {
+         cardGameView.startTimer();
+      }
+      
+      if (e.getActionCommand() == "Stop Timer")
+      {
+         cardGameView.stopTimer();
+      }
 
       if (cardGameModel.isGameOver())
       {

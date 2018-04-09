@@ -17,3 +17,8 @@
 /GameModel$GUICard.class
 /GameModel$Hand.class
 /GameView$CardTable.class
+/Controller.class
+/Model.class
+/View.class
+/Model$Timer.class
+/View$Timer.class
