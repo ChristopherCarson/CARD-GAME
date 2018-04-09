@@ -11,6 +11,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 //View class for a card game.
 class View
@@ -31,6 +33,9 @@ class View
    private CardTable myCardTable;
    Thread t = new Thread(new View.Timer());
    static boolean clockRun = false;
+   private static final SimpleDateFormat date = new SimpleDateFormat("mm:ss");
+   public static long clockCounter = 0;
+   public static JLabel clock = new JLabel();
 
    public void startTimer()
    {
@@ -97,7 +102,12 @@ class View
          playerScoreLabels[i] = new JLabel("Score:");
          myCardTable.pnlPlayArea.add(playerScoreLabels[i]);
       }
+      Date elapsed = new Date(clockCounter * 1000);
+      clock.setText(date.format(elapsed));
+      myCardTable.pnlPlayArea.add(clock);
    }
+   
+   
 
    // Adds the controller events to the buttons.
    public void addController(Controller controller)
@@ -248,20 +258,20 @@ class View
       public void run()
       {
 
-         long clockCounter = 0;
+         //long clockCounter = 0;
          while (View.clockRun == true)
          {
             clockCounter++;
-            // Date elapsed = new Date(clockCounter * 1000);
+            Date elapsed = new Date(clockCounter * 1000);
             // add the date to a label change test to whatever the label name is
-            // test.setText(date.format(elapsed));
+            clock.setText(date.format(elapsed));
             doNothing(1000);
             // System.out.println(clockCounter);
-            startTimerButton.setText("Click to Stop Timer: " + Long.toString(clockCounter));
+            startTimerButton.setText("Click to Stop Timer");
 
          }
          clockCounter--;
-         startTimerButton.setText("Click to Re-Start Timer: " + Long.toString(clockCounter));
+         startTimerButton.setText("Click to Re-Start Timer");
       }
 
       public void doNothing(int milliseconds)
