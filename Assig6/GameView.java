@@ -36,7 +36,7 @@ class View
    private CardTable myCardTable;
    Thread t = new Thread(new View.Timer());
    static boolean clockRun = false;
-   private static final SimpleDateFormat date = new SimpleDateFormat("mm:ss");
+   public static final SimpleDateFormat date = new SimpleDateFormat("mm:ss");
    public static long clockCounter = 0;
    public static JLabel clock = new JLabel();
 

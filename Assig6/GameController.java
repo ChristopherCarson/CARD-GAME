@@ -2,6 +2,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Date;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -30,6 +31,9 @@ class Controller implements ActionListener, MouseListener
       cardGameView.updateScore(0, HUMAN_PLAYER);
       cardGameView.updateScore(0, COMPUTER_PLAYER);
       cardGameView.updateStack(cardGameModel.getStackIcons());
+      cardGameView.clockCounter = 0;
+      Date elapsed = new Date(cardGameView.clockCounter * 1000);
+      cardGameView.clock.setText(" " + cardGameView.date.format(elapsed));
       cardGameView.setVisible(true);
    }
 
