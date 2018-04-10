@@ -5,7 +5,6 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import javax.swing.border.Border;
-
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -20,7 +19,6 @@ import java.util.Date;
 //View class for a card game.
 class View
 {
-
    static int NUM_CARDS_PER_HAND = Model.NUM_CARDS_PER_HAND;
    static int NUM_PLAYERS = Model.NUM_PLAYERS;
    static final int HUMAN_PLAYER = Model.HUMAN_PLAYER;
@@ -32,33 +30,18 @@ class View
    private JLabel[] computerHandLabels = new JLabel[NUM_CARDS_PER_HAND];
    private JButton[] playerHandButtons = new JButton[NUM_CARDS_PER_HAND];
    private JLabel[] playerScoreLabels = new JLabel[NUM_PLAYERS];
-   private int[] playerScores = new int[NUM_PLAYERS];
+   private JLabel deckLabel;
+   private JLabel deckCountLabel;
    private CardTable myCardTable;
    Thread t = new Thread(new View.Timer());
-   static boolean clockRun = false;
-   public static final SimpleDateFormat date = new SimpleDateFormat("mm:ss");
-   public static long clockCounter = 0;
-   public static JLabel clock = new JLabel();
-
-   public void startTimer()
-   {
-      if (t.isAlive())
-      {
-         t = new Thread(new View.Timer());
-         clockRun = false;
-
-      } else
-      {
-
-         t.start();
-         clockRun = true;
-      }
-   }
+   private static boolean clockRun = false;
+   private static final SimpleDateFormat date = new SimpleDateFormat("mm:ss");
+   private static long clockCounter = 0;
+   private static JLabel clock = new JLabel();
 
    // Constructor sets up the table.
    public View()
    {
-
       // Create the table.
       myCardTable = new CardTable("CardGame", NUM_CARDS_PER_HAND, NUM_PLAYERS);
       myCardTable.setSize(800, 600);
@@ -71,14 +54,23 @@ class View
       addToStackLabel[0] = new JLabel();
       addToStackLabel[0].setName("Play Area Card Stack");
       myCardTable.pnlPlayArea.add(addToStackLabel[0]);
-      addToStackLabel[0].setBounds(200 + offset + insets.left, 50 + insets.top, 100, 120);
+      addToStackLabel[0].setBounds(160 + offset + insets.left, 50 + insets.top, 100, 120);
 
       addToStackLabel[1] = new JLabel();
       addToStackLabel[1].setName("Play Area Card Stack");
       myCardTable.pnlPlayArea.add(addToStackLabel[1]);
-      addToStackLabel[1].setBounds(290 + offset + insets.left, 50 + insets.top, 100, 120);
-      // }
+      addToStackLabel[1].setBounds(330 + offset + insets.left, 50 + insets.top, 100, 120);
 
+      deckLabel = new JLabel();
+      deckLabel.setName("Playing Deck");
+      myCardTable.pnlPlayArea.add(deckLabel);
+      deckLabel.setBounds(245 + offset + insets.left, 50 + insets.top, 100, 120);
+      
+      deckCountLabel = new JLabel("0");
+      deckCountLabel.setName("Deck Count");
+      myCardTable.pnlPlayArea.add(deckCountLabel);
+      deckCountLabel.setBounds(277 + offset + insets.left, 155 + insets.top, 150, 20);
+      
       cantPlayButton = new JButton("I Cannot Play");
       Dimension size = cantPlayButton.getPreferredSize();
       cantPlayButton.setBounds(200 + offset + insets.left, 200 + insets.top, size.width + 56, size.height);
@@ -86,11 +78,10 @@ class View
       cantPlayButton.setVisible(true);
       myCardTable.pnlPlayArea.add(cantPlayButton);
 
-      ////////////////////////////
       startTimerButton = new JButton("Click to Start Timer");
       size = startTimerButton.getPreferredSize();
       startTimerButton.setBounds(450 + offset + insets.left, 200 + insets.top, size.width + 56, size.height);
-      startTimerButton.setActionCommand("Start Timer");//////
+      startTimerButton.setActionCommand("Start Timer");
       startTimerButton.setVisible(true);
       myCardTable.pnlPlayArea.add(startTimerButton);
 
@@ -101,7 +92,6 @@ class View
          playerHandButtons[i].setVisible(true);
          playerHandButtons[i].setActionCommand("Human Player Card");
          playerHandButtons[i].setBorderPainted(false);
-         ;
          myCardTable.pnlHumanHand.add(playerHandButtons[i]);
 
          computerHandLabels[i] = new JLabel();
@@ -135,19 +125,62 @@ class View
    {
       for (int i = 0; i < NUM_CARD_STACKS; i++)
          addToStackLabel[i].addMouseListener(controller);
+      
       cantPlayButton.addActionListener(controller);
       startTimerButton.addActionListener(controller);
 
       for (int i = 0; i < NUM_CARDS_PER_HAND; i++)
          playerHandButtons[i].addActionListener(controller);
    }
+   
+   // Loads the end game prompt for the player.
+   public int loadEndGamePrompt(int[] playerScores)
+   {
+      // End the game
+      String endMessage;
+      if (playerScores[COMPUTER_PLAYER] > playerScores[HUMAN_PLAYER])
+         endMessage = "Computer wins!\nYour score was: " + playerScores[HUMAN_PLAYER] + "\nComputer's Score was: "
+               + playerScores[COMPUTER_PLAYER];
+      else if (playerScores[COMPUTER_PLAYER] < playerScores[HUMAN_PLAYER])
+         endMessage = "You win!\nYour score was: " + playerScores[HUMAN_PLAYER] + "\nComputer's Score was: "
+               + playerScores[COMPUTER_PLAYER];
+      else
+         endMessage = "Tie!\nYour score was: " + playerScores[HUMAN_PLAYER] + "\nComputer's Score was: "
+               + playerScores[COMPUTER_PLAYER];
+      endMessage = endMessage + "\nDo you want to play again?";
 
+      // Replay the game?
+      return (JOptionPane.showConfirmDialog(null, endMessage, "Game Over", JOptionPane.YES_NO_OPTION));
+   }
+   
    // Sets the card table's visibility.
    public void setVisible(boolean visible)
    {
       myCardTable.setVisible(visible);
    }
 
+   //Sets the image for the deck using a supplied icon.
+   public void setDeckImage(Icon icon)
+   {
+      deckLabel.setIcon((ImageIcon) icon);
+   }
+   
+   //Updates the deck count using a supplied count.
+   public void updateDeckCount(int count)
+   {
+      deckCountLabel.setText("" + count);
+      if(count == 0) 
+      {
+         deckCountLabel.setVisible(false);
+         deckLabel.setVisible(false);
+      }
+      else
+      {
+         deckCountLabel.setVisible(true);
+         deckLabel.setVisible(true);
+      }
+   }
+   
    // Updates the display of the hand icons for a specific player.
    public boolean updateHand(Icon[] icons, int playerIndex)
    {
@@ -169,13 +202,15 @@ class View
                playerHandButtons[i].setIcon((ImageIcon) icons[i]);
             if (!playerHandButtons[i].isVisible())
                playerHandButtons[i].setVisible(true);
-         } else if (playerIndex == COMPUTER_PLAYER && i < computerHandLabels.length)
+         } 
+         else if (playerIndex == COMPUTER_PLAYER && i < computerHandLabels.length)
          {
-            if (computerHandLabels[i].getIcon() != (ImageIcon) icons[i])
+            if(computerHandLabels[i].getIcon() == null) 
                computerHandLabels[i].setIcon((ImageIcon) icons[i]);
             if (!computerHandLabels[i].isVisible())
                computerHandLabels[i].setVisible(true);
-         } else
+         } 
+         else
             return false;
       }
       update();
@@ -199,31 +234,15 @@ class View
       if (playerIndex > playerScoreLabels.length)
          return false;
       else if (playerIndex == 0)
-      {
-         playerScores[COMPUTER_PLAYER] = score;
          playerScoreLabels[COMPUTER_PLAYER].setText("Computer Score: " + score);
-      } else
-      {
-         playerScores[playerIndex] = score;
+      else
          playerScoreLabels[playerIndex].setText("Player " + playerIndex + " Score: " + score);
-      }
 
       return true;
    }
 
-   // Returns the index of a button component in the player's hand.
-   public int getPlayerButtonIndex(JButton button)
-   {
-      for (int i = 0; i < myCardTable.pnlHumanHand.getComponentCount(); i++)
-      {
-         if (button == myCardTable.pnlHumanHand.getComponent(i))
-            return i;
-      }
-      return -1;
-   }
-
    // Highlights a selected button green and unhighlights any other button.
-   public void setSelectedButton(int index)
+   public void updateSelectedButton(int index)
    {
       for (int i = 0; i < playerHandButtons.length; i++)
       {
@@ -240,7 +259,18 @@ class View
       myCardTable.revalidate();
       myCardTable.repaint();
    }
-
+   
+   // Returns the index of a button component in the player's hand.
+   public int getPlayerButtonIndex(JButton button)
+   {
+      for (int i = 0; i < myCardTable.pnlHumanHand.getComponentCount(); i++)
+      {
+         if (button == myCardTable.pnlHumanHand.getComponent(i))
+            return i;
+      }
+      return -1;
+   }
+   
    // Gets the component index of a stack label from the play area.
    public int getStackIndex(JLabel stack)
    {
@@ -252,33 +282,33 @@ class View
       return -1;
    }
 
-   // Loads the end game prompt for the player.
-   public int loadEndGamePrompt()
+   //Start or Stop the timer.
+   public void startTimer()
    {
-      // End the game
-      String endMessage;
-      if (playerScores[COMPUTER_PLAYER] > playerScores[HUMAN_PLAYER])
-         endMessage = "Computer wins!\nYour score was: " + playerScores[HUMAN_PLAYER] + "\nComputer's Score was: "
-               + playerScores[COMPUTER_PLAYER];
-      else if (playerScores[COMPUTER_PLAYER] < playerScores[1])
-         endMessage = "You win!\nYour score was: " + playerScores[HUMAN_PLAYER] + "\nComputer's Score was: "
-               + playerScores[COMPUTER_PLAYER];
+      if (t.isAlive())
+      {
+         t = new Thread(new View.Timer());
+         clockRun = false;
+      } 
       else
-         endMessage = "Tie!\nYour score was: " + playerScores[HUMAN_PLAYER] + "\nComputer's Score was: "
-               + playerScores[COMPUTER_PLAYER];
-      endMessage = endMessage + "\nDo you want to play again?";
-
-      // Replay the game?
-      return (JOptionPane.showConfirmDialog(null, endMessage, "Game Over", JOptionPane.YES_NO_OPTION));
+      {
+         t.start();
+         clockRun = true;
+      }
    }
 
+   //Resets the timer to 0.
+   public void resetTimer()
+   {
+      clockCounter = 0;
+      clock.setText(" " + date.format(clockCounter));
+   }
+   
    // class for clock in game
    static class Timer extends Thread
    {
-
       public void run()
       {
-
          // long clockCounter = 0;
          while (View.clockRun == true)
          {
@@ -292,7 +322,7 @@ class View
 
          }
          clockCounter--;
-         startTimerButton.setText("Click to Re-Start Timer");
+         startTimerButton.setText("Click to Restart Timer");
       }
 
       public void doNothing(int milliseconds)
@@ -388,5 +418,4 @@ class CardTable extends JFrame
    {
       return numPlayers;
    }
-
 } // End Card Table Class.
