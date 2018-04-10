@@ -119,9 +119,9 @@ class View
       myCardTable.pnlPlayArea.add(playerScoreLabels[1]);
 
       Date elapsed = new Date(clockCounter * 1000);
-      clock.setFont(clock.getFont().deriveFont(64.0f));
-      clock.setText(date.format(elapsed));
-      clock.setBounds(460 + offset + insets.left, 62 + insets.top, 170, 100);
+      clock.setFont(clock.getFont().deriveFont(40.0f));
+      clock.setText(" " + date.format(elapsed));
+      clock.setBounds(480 + offset + insets.left, 110 + insets.top, 130, 50);
       Border border = BorderFactory.createLineBorder(Color.BLACK, 2);
       clock.setBorder(border);
       clock.setBackground(Color.WHITE);
@@ -285,7 +285,7 @@ class View
             clockCounter++;
             Date elapsed = new Date(clockCounter * 1000);
             // add the date to a label change test to whatever the label name is
-            clock.setText(date.format(elapsed));
+            clock.setText(" " + date.format(elapsed));
             doNothing(1000);
             // System.out.println(clockCounter);
             startTimerButton.setText("Click to Stop Timer");
