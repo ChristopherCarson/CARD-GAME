@@ -26,7 +26,7 @@ class View
    static int NUM_CARD_STACKS = Model.NUM_CARD_STACKS;
    private JLabel[] addToStackLabel = new JLabel[NUM_CARD_STACKS];
    private JButton cantPlayButton;
-   static JButton startTimerButton;
+   private static JButton startTimerButton;
    private JLabel[] computerHandLabels = new JLabel[NUM_CARDS_PER_HAND];
    private JButton[] playerHandButtons = new JButton[NUM_CARDS_PER_HAND];
    private JLabel[] playerScoreLabels = new JLabel[NUM_PLAYERS];
