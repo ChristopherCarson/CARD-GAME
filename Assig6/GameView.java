@@ -19,21 +19,22 @@ import java.util.Date;
 //View class for a card game.
 class View
 {
-   static int NUM_CARDS_PER_HAND = Model.NUM_CARDS_PER_HAND;
-   static int NUM_PLAYERS = Model.NUM_PLAYERS;
-   static final int HUMAN_PLAYER = Model.HUMAN_PLAYER;
-   static final int COMPUTER_PLAYER = Model.COMPUTER_PLAYER;
-   static int NUM_CARD_STACKS = Model.NUM_CARD_STACKS;
+   private static final int MAX_IMAGES_IN_DECK = 56 / 5;
+   private static final int HUMAN_PLAYER = Model.HUMAN_PLAYER;
+   private static final int COMPUTER_PLAYER = Model.COMPUTER_PLAYER;
+   private static int NUM_CARD_STACKS = Model.NUM_CARD_STACKS;
+   private static int NUM_CARDS_PER_HAND = Model.NUM_CARDS_PER_HAND;
+   private static int NUM_PLAYERS = Model.NUM_PLAYERS;
    private JLabel[] addToStackLabel = new JLabel[NUM_CARD_STACKS];
    private JButton cantPlayButton;
    private static JButton startTimerButton;
    private JLabel[] computerHandLabels = new JLabel[NUM_CARDS_PER_HAND];
    private JButton[] playerHandButtons = new JButton[NUM_CARDS_PER_HAND];
    private JLabel[] playerScoreLabels = new JLabel[NUM_PLAYERS];
-   private JLabel deckLabel;
+   private JLabel[] deckLabel = new JLabel[MAX_IMAGES_IN_DECK];
    private JLabel deckCountLabel;
    private CardTable myCardTable;
-   Thread t = new Thread(new View.Timer());
+   private Thread t = new Thread(new View.Timer());
    private static boolean clockRun = false;
    private static final SimpleDateFormat date = new SimpleDateFormat("mm:ss");
    private static long clockCounter = 0;
@@ -51,6 +52,7 @@ class View
       Insets insets = myCardTable.pnlPlayArea.getInsets();
       int offset = -30;
 
+      //Stacks
       addToStackLabel[0] = new JLabel();
       addToStackLabel[0].setName("Play Area Card Stack");
       myCardTable.pnlPlayArea.add(addToStackLabel[0]);
@@ -61,16 +63,22 @@ class View
       myCardTable.pnlPlayArea.add(addToStackLabel[1]);
       addToStackLabel[1].setBounds(330 + offset + insets.left, 50 + insets.top, 100, 120);
 
-      deckLabel = new JLabel();
-      deckLabel.setName("Playing Deck");
-      myCardTable.pnlPlayArea.add(deckLabel);
-      deckLabel.setBounds(245 + offset + insets.left, 50 + insets.top, 100, 120);
+      //Deck images
+      for(int i = 0; i < MAX_IMAGES_IN_DECK; i++)
+      {
+         deckLabel[i] = new JLabel();
+         deckLabel[i].setName("Playing Deck " + i);
+         myCardTable.pnlPlayArea.add(deckLabel[i]);
+         deckLabel[i].setBounds(245 + offset + insets.left - (i / 2), 50 + insets.top - i, 100, 120);
+      }
       
+      //Deck count
       deckCountLabel = new JLabel("0");
       deckCountLabel.setName("Deck Count");
       myCardTable.pnlPlayArea.add(deckCountLabel);
       deckCountLabel.setBounds(277 + offset + insets.left, 155 + insets.top, 150, 20);
       
+      //Buttons
       cantPlayButton = new JButton("I Cannot Play");
       Dimension size = cantPlayButton.getPreferredSize();
       cantPlayButton.setBounds(200 + offset + insets.left, 200 + insets.top, size.width + 56, size.height);
@@ -162,7 +170,8 @@ class View
    //Sets the image for the deck using a supplied icon.
    public void setDeckImage(Icon icon)
    {
-      deckLabel.setIcon((ImageIcon) icon);
+      for(int i = 0; i < deckLabel.length; i++)
+         deckLabel[i].setIcon((ImageIcon) icon);
    }
    
    //Updates the deck count using a supplied count.
@@ -172,12 +181,19 @@ class View
       if(count == 0) 
       {
          deckCountLabel.setVisible(false);
-         deckLabel.setVisible(false);
+         for(int i = 0; i < deckLabel.length; i++)
+            deckLabel[i].setVisible(false);
       }
       else
       {
          deckCountLabel.setVisible(true);
-         deckLabel.setVisible(true);
+         for(int i = 0; i < deckLabel.length; i++)
+         {
+            if(i * 5 > count)
+               deckLabel[i].setVisible(false);
+            else
+               deckLabel[i].setVisible(true);
+         }
       }
    }
    
@@ -418,4 +434,5 @@ class CardTable extends JFrame
    {
       return numPlayers;
    }
+
 } // End Card Table Class.
