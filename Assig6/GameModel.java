@@ -1,14 +1,6 @@
-import java.awt.FlowLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.util.Random;
-
-import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
 
 //Model Class for the card game.
 class Model
@@ -61,7 +53,7 @@ class Model
    // Accepts boolean value to determine if the player made a move or if they
    // skipped their turn.
    public void endTurn(boolean madeMove)
-   {
+   {  
       if (isGameOver())
          return;
 
@@ -71,19 +63,85 @@ class Model
       else
          turnsSkipped++;
 
-      playerTurn++;
-      if (playerTurn == NUM_PLAYERS)
-         playerTurn = 0;
-
-      // Determines if the game needs to add cards to the stacks from the deck.
+      // Determines if the game needs to add cards to the stacks from the deck due to no moves being made.
       if (turnsSkipped == NUM_PLAYERS)
       {
          for (int i = 0; i < NUM_CARD_STACKS; i++)
             addCardToStack(i);
          turnsSkipped = 0;
       }
+      
+      //Unselect the current selection.
+      setSelectedCard(-1);
+      
+      //Increment so that it is the next player's turn.
+      playerTurn++;
+      if (playerTurn == NUM_PLAYERS)
+         playerTurn = 0;
    }
 
+   // Adds a card to a stack using the index of the stack.
+   public boolean addCardToStack(int stackIndex)
+   {
+      // Determines if the cards will be added to the stack from the deck
+      // or from player's hand.
+      if ((playerTurn == -1 || turnsSkipped == NUM_PLAYERS) && !gameOver)
+         cardStack[stackIndex] = cardGame.getCardFromDeck();
+      else
+      {
+         // Check if the player is making a valid move before adding to the stack.
+         if (isValidMove(stackIndex))
+         {
+            // Take card from player's hand.
+            cardStack[stackIndex] = cardGame.playCard(playerTurn, selectedIndex);
+            cardGame.takeCard(playerTurn);
+            updateScore(playerTurn);
+         } 
+         else
+            return false;
+      }
+
+      // End the game if there are no more cards in the deck.
+      if (cardGame.getNumCardsRemainingInDeck() == 0)
+         gameOver = true;
+      return true;
+   }
+
+   // Increment the score of a player by one.
+   private void updateScore(int player)
+   {
+      if (player < playerScores.length)
+         playerScores[player]++;
+   }
+
+   // Check to see if a move on a specific stack is valid.
+   // A move is valid if the card value is either one less or one greater than the
+   // card on the stack.
+   private boolean isValidMove(int stackIndex)
+   {
+      return (Math.abs(Card.getCardValueRank(cardStack[stackIndex])
+            - Card.getCardValueRank(cardGame.getHand(playerTurn).inspectCard(selectedIndex))) == 1);
+   }
+   
+   // Simulates a turn by the computer.
+   public void startComputerTurn()
+   {
+      Hand hand = cardGame.getHand(COMPUTER_PLAYER);
+      for (int i = 0; i < hand.getNumCards(); i++)
+      {
+         for (int j = 0; j < cardStack.length; j++)
+         {
+            setSelectedCard(i);
+            if (addCardToStack(j))
+            {
+               endTurn(true); // Successful move
+               return;
+            }
+         }
+      }
+      endTurn(false); // Unsuccessful move
+   }
+   
    // Get the images for a hand.
    public Icon[] getHandIcons(int handIndex)
    {
@@ -108,78 +166,18 @@ class Model
       return cardImages;
    }
 
-   // Adds a card to a stack using the index of the stack.
-   public boolean addCardToStack(int stackIndex)
+   // Get the image for a card.
+   public Icon getBackCardIcon() 
    {
-      // Determines if the cards will be added to the stack from the deck.
-      if ((playerTurn == -1 || turnsSkipped == NUM_PLAYERS) && !gameOver)
-         cardStack[stackIndex] = cardGame.getCardFromDeck();
-      else
-      {
-         // Check if the player is making a valid move before adding to the stack.
-         if (isValidMove(stackIndex))
-         {
-            // Take card from player's hand.
-            cardStack[stackIndex] = cardGame.playCard(playerTurn, selectedIndex);
-            cardGame.takeCard(playerTurn);
-            updateScore(playerTurn);
-
-            // Unselect the card in the hand.
-            setSelected(-1);
-         } else
-         {
-            // Unselect the card in the hand.
-            setSelected(-1);
-            return false;
-         }
-      }
-
-      // End the game if there are no more cards in the deck.
-      if (cardGame.getNumCardsRemainingInDeck() == 0)
-         gameOver = true;
-      return true;
+      return GUICard.getBackCardIcon();
    }
-
-   // Increment the score of a player by one.
-   private void updateScore(int player)
+   
+   // Accessor for the deck count.
+   public int getCardsInDeckCount()
    {
-      if (player < playerScores.length)
-         playerScores[player]++;
+      return cardGame.getNumCardsRemainingInDeck();
    }
-
-   // Check to see if a move on a specific stack is valid.
-   // A move is valid if the card value is either one less or one greater than the
-   // card on the stack.
-   private boolean isValidMove(int stackIndex)
-   {
-      return (Math.abs(Card.getCardValueRank(cardStack[stackIndex])
-            - Card.getCardValueRank(cardGame.getHand(playerTurn).inspectCard(selectedIndex))) == 1);
-   }
-
-   // returns the index of the card currently selected in the hand.
-   public int getSelected()
-   {
-      return selectedIndex;
-   }
-
-   // Sets the currently selected card in the hand.
-   public boolean setSelected(int index)
-   {
-      if (index >= -1 && index < cardGame.getHand(HUMAN_PLAYER).getNumCards())
-         selectedIndex = index;
-      else
-         return false;
-      return true;
-   }
-
-   // Sets the player turn.
-   public boolean setPlayerTurn(int player)
-   {
-      if (player >= -1 && player < NUM_PLAYERS)
-         playerTurn = player;
-      return (playerTurn == player);
-   }
-
+   
    // Accessor for player turn.
    public int getPlayerTurn()
    {
@@ -194,30 +192,41 @@ class Model
       else
          return -1;
    }
-
-   // Simulates a turn by the computer.
-   public void startComputerTurn()
+   
+   //Accessor for all scores.
+   public int[] getPlayerScores()
    {
-      Hand hand = cardGame.getHand(COMPUTER_PLAYER);
-      for (int i = 0; i < hand.getNumCards(); i++)
-      {
-         for (int j = 0; j < cardStack.length; j++)
-         {
-            setSelected(i);
-            if (addCardToStack(j))
-            {
-               endTurn(true); // Successful move
-               return;
-            }
-         }
-      }
-      endTurn(false); // Unsuccessful move
+      return playerScores;
    }
-
-   // Accessor for the game over state.
+   
+   // returns the index of the card currently selected in the hand.
+   public int getSelectedCardIndex()
+   {
+      return selectedIndex;
+   }
+   
+   // Accessor for the game state.
    public boolean isGameOver()
    {
       return gameOver;
+   }
+   
+   // Sets the currently selected card in the hand.
+   public boolean setSelectedCard(int index)
+   {
+      if (index >= -1 && index < cardGame.getHand(playerTurn).getNumCards())
+         selectedIndex = index;
+      else
+         return false;
+      return true;
+   }
+
+   // Sets the player turn.
+   public boolean setPlayerTurn(int player)
+   {
+      if (player >= -1 && player < NUM_PLAYERS)
+         playerTurn = player;
+      return (playerTurn == player);
    }
 }
 
