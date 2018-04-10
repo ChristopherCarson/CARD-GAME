@@ -95,7 +95,7 @@ class Controller implements ActionListener, MouseListener
          cardGameView.startTimer();
       
       checkGameState();
-   }
+   }//End Actions Performed
 
    // Mouse pressed events matter when player clicks on one of the cards on a stack.
    @Override
@@ -121,7 +121,7 @@ class Controller implements ActionListener, MouseListener
       }
 
       checkGameState();
-   }
+   }//End Mouse Pressed
 
    @Override
    public void mouseEntered(MouseEvent e)
@@ -142,4 +142,4 @@ class Controller implements ActionListener, MouseListener
    public void mouseReleased(MouseEvent e)
    {
    }
-}
+}//End Controller Class
