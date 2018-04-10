@@ -126,9 +126,9 @@ class View
       clock.setOpaque(true);
 
       myCardTable.pnlPlayArea.add(clock);
-   }
+   }//End Constructor
 
-   // Adds the controller events to the buttons.
+   // Adds the controller events to the buttons and stacks.
    public void addController(Controller controller)
    {
       for (int i = 0; i < NUM_CARD_STACKS; i++)
@@ -144,7 +144,7 @@ class View
    // Loads the end game prompt for the player.
    public int loadEndGamePrompt(int[] playerScores)
    {
-      // End the game
+      //Give player end game prompt message.
       String endMessage;
       if (playerScores[COMPUTER_PLAYER] > playerScores[HUMAN_PLAYER])
          endMessage = "Computer wins!\nYour score was: " + playerScores[HUMAN_PLAYER] + "\nComputer's Score was: "
@@ -156,8 +156,7 @@ class View
          endMessage = "Tie!\nYour score was: " + playerScores[HUMAN_PLAYER] + "\nComputer's Score was: "
                + playerScores[COMPUTER_PLAYER];
       endMessage = endMessage + "\nDo you want to play again?";
-
-      // Replay the game?
+      
       return (JOptionPane.showConfirmDialog(null, endMessage, "Game Over", JOptionPane.YES_NO_OPTION));
    }
    
@@ -174,10 +173,9 @@ class View
          deckLabel[i].setIcon((ImageIcon) icon);
    }
    
-   //Updates the deck count using a supplied count.
+   //Updates the deck count and images using a supplied count.
    public void updateDeckCount(int count)
    {
-      deckCountLabel.setText("" + count);
       if(count == 0) 
       {
          deckCountLabel.setVisible(false);
@@ -186,7 +184,10 @@ class View
       }
       else
       {
+         deckCountLabel.setText("" + count);
          deckCountLabel.setVisible(true);
+         
+         //Gives deck a diminished look as the count goes lower.
          for(int i = 0; i < deckLabel.length; i++)
          {
             if(i * 5 > count)
@@ -231,7 +232,7 @@ class View
       }
       update();
       return true;
-   }
+   }//End UpdateHand
 
    // Changes the display for the stack icons.
    public boolean updateStack(Icon[] icon)
@@ -352,9 +353,7 @@ class View
             System.exit(0);
          }
       }
-
-   }
-
+   }//End Timer Class
 }
 
 // CardTable - Class represents the GUI for a card table.
