@@ -1,8 +1,11 @@
 import java.awt.Color;
-import java.awt.FlowLayout;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
+import javax.swing.border.Border;
+
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -62,21 +65,31 @@ class View
       myCardTable.setLocationRelativeTo(null);
       myCardTable.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-      // Add Play Area Buttons
-      for (int i = 0; i < NUM_CARD_STACKS; i++)
-      {
-         addToStackLabel[i] = new JLabel();
-         addToStackLabel[i].setName("Play Area Card Stack");
-         myCardTable.pnlPlayArea.add(addToStackLabel[i]);
-      }
+      Insets insets = myCardTable.pnlPlayArea.getInsets();
+      int offset = -30;
+
+      addToStackLabel[0] = new JLabel();
+      addToStackLabel[0].setName("Play Area Card Stack");
+      myCardTable.pnlPlayArea.add(addToStackLabel[0]);
+      addToStackLabel[0].setBounds(200 + offset + insets.left, 50 + insets.top, 100, 120);
+
+      addToStackLabel[1] = new JLabel();
+      addToStackLabel[1].setName("Play Area Card Stack");
+      myCardTable.pnlPlayArea.add(addToStackLabel[1]);
+      addToStackLabel[1].setBounds(290 + offset + insets.left, 50 + insets.top, 100, 120);
+      // }
 
       cantPlayButton = new JButton("I Cannot Play");
+      Dimension size = cantPlayButton.getPreferredSize();
+      cantPlayButton.setBounds(200 + offset + insets.left, 200 + insets.top, size.width + 56, size.height);
       cantPlayButton.setActionCommand("I Cannot Play");
       cantPlayButton.setVisible(true);
       myCardTable.pnlPlayArea.add(cantPlayButton);
 
       ////////////////////////////
       startTimerButton = new JButton("Click to Start Timer");
+      size = startTimerButton.getPreferredSize();
+      startTimerButton.setBounds(450 + offset + insets.left, 200 + insets.top, size.width + 56, size.height);
       startTimerButton.setActionCommand("Start Timer");//////
       startTimerButton.setVisible(true);
       myCardTable.pnlPlayArea.add(startTimerButton);
@@ -97,17 +110,25 @@ class View
       }
 
       // Player Scores
-      for (int i = 0; i < playerScoreLabels.length; i++)
-      {
-         playerScoreLabels[i] = new JLabel("Score:");
-         myCardTable.pnlPlayArea.add(playerScoreLabels[i]);
-      }
+      playerScoreLabels[0] = new JLabel("Score:");
+      playerScoreLabels[0].setBounds(160 + offset + insets.left, 10 + insets.top, 200, 20);
+      myCardTable.pnlPlayArea.add(playerScoreLabels[0]);
+
+      playerScoreLabels[1] = new JLabel("Score:");
+      playerScoreLabels[1].setBounds(300 + offset + insets.left, 10 + insets.top, 200, 20);
+      myCardTable.pnlPlayArea.add(playerScoreLabels[1]);
+
       Date elapsed = new Date(clockCounter * 1000);
+      clock.setFont(clock.getFont().deriveFont(64.0f));
       clock.setText(date.format(elapsed));
+      clock.setBounds(460 + offset + insets.left, 62 + insets.top, 170, 100);
+      Border border = BorderFactory.createLineBorder(Color.BLACK, 2);
+      clock.setBorder(border);
+      clock.setBackground(Color.WHITE);
+      clock.setOpaque(true);
+
       myCardTable.pnlPlayArea.add(clock);
    }
-   
-   
 
    // Adds the controller events to the buttons.
    public void addController(Controller controller)
@@ -258,7 +279,7 @@ class View
       public void run()
       {
 
-         //long clockCounter = 0;
+         // long clockCounter = 0;
          while (View.clockRun == true)
          {
             clockCounter++;
@@ -348,8 +369,9 @@ class CardTable extends JFrame
 
       // CREATE THE PLAY AREA.
       // Create a grid layout for the play and card areas.
-      FlowLayout playAreaFlow = new FlowLayout();
-      pnlPlayArea.setLayout(playAreaFlow);
+      // FlowLayout playAreaFlow = new FlowLayout();
+      // pnlPlayArea.setLayout(playAreaFlow);
+      pnlPlayArea.setLayout(null);
 
       GridLayout cardAreaGrid = new GridLayout(1, MAX_CARDS_PER_HAND);
       pnlComputerHand.setLayout(cardAreaGrid);
