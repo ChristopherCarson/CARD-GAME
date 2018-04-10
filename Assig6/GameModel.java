@@ -78,7 +78,7 @@ class Model
       playerTurn++;
       if (playerTurn == NUM_PLAYERS)
          playerTurn = 0;
-   }
+   }//End end turn.
 
    // Adds a card to a stack using the index of the stack.
    public boolean addCardToStack(int stackIndex)
@@ -105,7 +105,7 @@ class Model
       if (cardGame.getNumCardsRemainingInDeck() == 0)
          gameOver = true;
       return true;
-   }
+   }//End add card to stack.
 
    // Increment the score of a player by one.
    private void updateScore(int player)
@@ -228,7 +228,7 @@ class Model
          playerTurn = player;
       return (playerTurn == player);
    }
-}
+}//End Model Class.
 
 // class CardGameFramework ----------------------------------------------------
 class CardGameFramework
